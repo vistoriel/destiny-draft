@@ -1,7 +1,10 @@
 {
   "name": "destiny-draft",
+  "description": "A web application for drafting characters in the Destiny game system.",
   "version": "0.1.0",
-  "private": true,
+  "author": "vistoriel",
+  "license": "MIT",
+  "private": false,
   "scripts": {
     "dev": "bun --bun next dev",
     "build": "bun --bun next build",
