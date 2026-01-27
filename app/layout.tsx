@@ -24,8 +24,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${spectralSans.variable} ${geistMono.variable} antialiased`}>
-      <body>
+    <html lang="en">
+      <body className={`${spectralSans.variable} ${geistMono.variable} antialiased`}>
         {children}
       </body>
     </html>
