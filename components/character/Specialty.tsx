@@ -25,12 +25,12 @@ export function Specialty({ level }: SpecialtyProps) {
         ? <input 
           type="text" 
           className={cn(
-            'w-full text-center border-2 focus:outline-2 focus-visible:outline-2 focus:border-amber-900 outline-amber-600 outline-offset-0 focus:z-10',
+            'w-full text-center border-2 active:border-amber-900 focus:outline-2 focus-visible:outline-2 focus:border-amber-900 outline-amber-600 outline-offset-0 focus:z-10',
             level === 'I' ? 'p-0.5 font-bold' : 'p-1 font-semibold'
           )}
           placeholder={level + ' Specialty'}
         />
-        : <label className="h-12 w-full flex items-center border-2 border-stone-900 cursor-text focus-within:border-amber-900 focus-within:outline-2 outline-amber-600 focus-within:z-10 outline-offset-0">
+        : <label className="h-12 w-full flex items-center border-2 border-stone-900 cursor-text active:border-amber-900 focus-within:border-amber-900 focus-within:outline-2 outline-amber-600 focus-within:z-10 outline-offset-0">
           <TextareaAutosize
             className="block w-full px-1 py-0.5 text-center leading-tight resize-none outline-none"
             maxRows={2}
@@ -40,7 +40,7 @@ export function Specialty({ level }: SpecialtyProps) {
       }
       <input 
         type="checkbox"
-        className="appearance-none shrink-0 w-7 h-7 border-2 border-stone-900 cursor-pointer relative focus-visible:outline-2 focus-visible:border-amber-900 outline-amber-600 outline-offset-0 focus-visible:z-10
+        className="appearance-none shrink-0 w-7 h-7 border-2 border-stone-900 cursor-pointer relative active:border-amber-900 focus-visible:outline-2 focus-visible:border-amber-900 outline-amber-600 outline-offset-0 focus-visible:z-10
           checked:after:content-['+'] checked:after:absolute checked:after:text-3xl checked:after:font-semibold checked:after:left-1/2 checked:after:top-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2"
       />
     </div>

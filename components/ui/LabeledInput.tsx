@@ -19,14 +19,14 @@ export function LabeledInput({
       <input
         type="text"
         className={cn(
-          'text-center border-b-2 border-stone-900 placeholder:text-stone-300',
+          'text-center border-b-2 border-stone-900 placeholder:text-stone-300 active:border-amber-900 focus:outline-2 focus-visible:outline-2 focus:border-amber-900 outline-amber-600 outline-offset-0 focus:z-10',
           variant === 'title' && 'text-3xl font-bold min-w-96 w-96',
           variant === 'regular' && 'min-w-20 w-20',
           className
         )}
         {...props}
       />
-      <label className="text-xs text-stone-500 text-nowrap">{label}</label>
+      <label className="text-xs text-stone-500 whitespace-nowrap text-nowrap">{label}</label>
     </div>
   );
 }
