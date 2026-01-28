@@ -1,4 +1,4 @@
-import { CharacterDetails, CharacterHeader } from "@/components/character";
+import { CharacterDetails, CharacterExperiences, CharacterHeader } from "@/components/character";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -9,9 +9,10 @@ export const metadata: Metadata = {
 export default function CharacterPage() {
   return (
     <div className="w-full flex justify-center">
-      <main className="py-12 shadow-lg border border-stone-200 min-h-screen flex flex-col">
+      <main className="w-209 py-12 shadow-lg border border-stone-200 min-h-screen flex flex-col">
         <CharacterHeader className="px-12 pb-6 border-b border-stone-200"/>
         <CharacterDetails className="px-12 py-6 border-b border-stone-200"/>
+        <CharacterExperiences className="px-12 py-6 border-b border-stone-200"/>
       </main>
     </div>
   );

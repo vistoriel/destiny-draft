@@ -20,14 +20,14 @@ export function CharacterDetails({ className }: { className?: string }) {
       <div className="w-full h-fit border-2 border-stone-900">
         <input 
           type="text" 
-          className="w-full text-center font-bold border-b-2 border-stone-900"
+          className="w-full p-0.5 text-center font-bold border-b-2 border-stone-900"
           placeholder="Section name"
           defaultValue={'Details'}
         />
         <EditorContent editor={editor} />
       </div>
       <div className="w-56 min-h-56 shrink-0 border-2 border-stone-900">
-        <h2 className="w-full text-center font-bold border-b-2 border-stone-900">
+        <h2 className="w-full p-0.5 text-center font-bold border-b-2 border-stone-900">
           Inventory
         </h2>
       </div>
