@@ -12,11 +12,11 @@ export function CharacterSpecialties({ className }: { className?: string }) {
           {Array.from({ length: 3 }).map((_, idx) => (
             <div key={idx} className="flex flex-col gap-0.5 w-full">
               <div className="flex gap-1 justify-center">
-                <hr className="h-3 border border-stone-900" />
+                <hr className="h-3 border border-stone-900 rounded-xs" />
               </div>
               <Specialty level="II" />
               <div className="flex gap-1 justify-center">
-                <hr className="h-3 border border-stone-900" />
+                <hr className="h-3 border border-stone-900 rounded-xs" />
               </div>
               <div className="flex flex-col gap-1">
                 {Array.from({ length: 3 }).map((_, subIdx) => (

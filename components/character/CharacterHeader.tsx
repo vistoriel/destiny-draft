@@ -9,7 +9,7 @@ export function CharacterHeader({ className }: { className?: string }) {
     <header className={cn('flex flex-col gap-4', className)}>
       <div className="flex gap-4">
         <Image 
-          className="border-2 border-stone-900 w-54.5 h-54.5 object-cover"
+          className="border-2 border-stone-900 w-54.5 h-54.5 object-cover rounded-xs"
           src="/character-image.png"
           width={428} 
           height={428}
