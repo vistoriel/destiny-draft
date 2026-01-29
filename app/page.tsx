@@ -19,7 +19,7 @@ export default function Home() {
         </p>
         <ChevronDown size={32} className="text-stone-300"/> 
       </div>
-      <main className="w-209 mx-auto py-12 shadow-lg border border-stone-200 flex flex-col">
+      <main className="w-209 mx-auto bg-background py-12 shadow-lg border border-stone-200 flex flex-col">
         <GameHeader className="px-12 pb-6 border-b border-stone-300"/>
       </main>
     </>
