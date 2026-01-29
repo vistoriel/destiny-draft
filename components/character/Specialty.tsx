@@ -25,12 +25,12 @@ export function Specialty({ level }: SpecialtyProps) {
         ? <input 
           type="text" 
           className={cn(
-            'w-full text-center border-2 rounded-xs placeholder:text-stone-300 active:border-primary-900 active:scale-[98%] focus:bg-primary-50 focus:outline-2 focus-visible:outline-2 focus:border-primary-900 outline-primary-600 outline-offset-0 focus:z-10',
+            'w-full text-center border-2 rounded-xs placeholder:text-stone-300 active:border-primary-900 focus:bg-primary-50 focus:outline-2 focus-visible:outline-2 focus:border-primary-900 outline-primary-600 outline-offset-0 focus:z-10',
             level === 'I' ? 'p-0.5 font-bold' : 'p-1 font-semibold'
           )}
           placeholder={level + ' Specialty'}
         />
-        : <label className="h-12 w-full flex items-center border-2 border-stone-900 rounded-xs cursor-text active:scale-[98%] active:border-primary-900 focus-within:bg-primary-50 focus-within:border-primary-900 focus-within:outline-2 outline-primary-600 focus-within:z-10 outline-offset-0">
+        : <label className="h-12 w-full flex items-center border-2 border-stone-900 rounded-xs cursor-text active:border-primary-900 focus-within:bg-primary-50 focus-within:border-primary-900 focus-within:outline-2 outline-primary-600 focus-within:z-10 outline-offset-0">
           <TextareaAutosize
             className="block w-full px-1 py-0.5 text-center leading-tight resize-none outline-none placeholder:text-stone-300"
             maxRows={2}

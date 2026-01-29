@@ -27,6 +27,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${spectralSans.variable} ${geistMono.variable} antialiased`}>
         {children}
+        <footer className="px-12 flex flex-col items-center gap-2 mt-6 mb-12">
+          <span className="block text-sm text-stone-400">
+            Destiny Draft · 2026 · Made with &lt;3 by <a className="text-primary-500 underline" href="https://github.com/vistoriel" target="_blank" rel="noopener noreferrer">vistoriel</a>
+          </span>
+        </footer>
       </body>
     </html>
   );
