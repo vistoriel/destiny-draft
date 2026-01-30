@@ -1,4 +1,6 @@
 import { GameHeader } from "@/components/game";
+import { GameCharacters } from "@/components/game/GameCharacters";
+import { RaisedButton } from "@/components/ui/RaisedButton";
 import { ChevronDown, Guitar, PenTool, Swords } from "lucide-react";
 
 export default function Home() {
@@ -20,7 +22,21 @@ export default function Home() {
         <ChevronDown size={32} className="text-stone-300"/> 
       </div>
       <main className="w-209 mx-auto bg-background py-12 shadow-lg border border-stone-200 flex flex-col">
-        <GameHeader className="px-12 pb-6 border-b border-stone-300"/>
+        <GameHeader className="px-12"/>
+        <GameCharacters className="px-12 pt-6" />
+        <footer className="flex justify-center items-center gap-1 px-12 pt-8">
+          <div className="flex items-center">
+            <hr className="h-3 border border-stone-900 rounded-xs" />
+          </div>
+          <hr className="w-full border border-dashed border-stone-900 rounded-xs" />
+          <RaisedButton className="shrink-0" >
+            Create a Draft
+          </RaisedButton>
+          <hr className="w-full border border-dashed border-stone-900 rounded-xs" />
+          <div className="flex items-center">
+            <hr className="h-3 border border-stone-900 rounded-xs" />
+          </div>
+        </footer>
       </main>
     </>
   );

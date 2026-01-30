@@ -10,7 +10,7 @@ export function GameHeader({ className }: { className?: string }) {
         <div className="flex flex-col gap-4">
           <Image 
             className="border-2 border-stone-900 w-54.5 h-54.5 object-cover rounded-xs"
-            src="/game-image.png"
+            src="/game-image.jpeg"
             width={428} 
             height={428}
             alt="Character Image"
