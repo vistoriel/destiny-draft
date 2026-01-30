@@ -1,5 +1,4 @@
-import { GameHeader } from "@/components/game";
-import { GameCharacters } from "@/components/game/GameCharacters";
+import { DraftHeader, DraftPlayers } from "@/components/draft";
 import { RaisedButton } from "@/components/ui/RaisedButton";
 import { ChevronDown, Guitar, PenTool, Swords } from "lucide-react";
 
@@ -22,8 +21,8 @@ export default function Home() {
         <ChevronDown size={32} className="text-stone-300"/> 
       </div>
       <main className="w-209 mx-auto bg-background py-12 shadow-lg border border-stone-200 flex flex-col">
-        <GameHeader className="px-12"/>
-        <GameCharacters className="px-12 pt-6" />
+        <DraftHeader className="px-12"/>
+        <DraftPlayers className="px-12 pt-6" />
         <footer className="flex justify-center items-center gap-1 px-12 pt-8">
           <div className="flex items-center">
             <hr className="h-3 border border-stone-900 rounded-xs" />

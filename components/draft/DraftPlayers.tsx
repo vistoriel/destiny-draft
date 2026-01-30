@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Player } from "./Player";
 
-export function GameCharacters({ className }: { className?: string }) {
+export function DraftPlayers({ className }: { className?: string }) {
   return (
     <section className={cn('flex flex-col gap-2', className)}>
       {Array.from({ length: 4 }).map((_, positionIdx) => (

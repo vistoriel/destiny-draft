@@ -3,7 +3,7 @@ import Image from "next/image";
 import { LabeledInput } from "../ui";
 import { cn } from "@/lib/utils";
 
-export function GameHeader({ className }: { className?: string }) {
+export function DraftHeader({ className }: { className?: string }) {
   return (
     <header className={cn('flex flex-col gap-4', className)}>
       <div className="flex gap-4">
