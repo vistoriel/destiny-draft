@@ -1,14 +1,29 @@
+import { SignJWT } from 'jose';
 import { cookies } from 'next/headers';
 
-const ADMIN_KEY_COOKIE = 'admin_key';
-const PLAYER_KEY_COOKIE = 'player_key';
+const supabaseJwtSecret = process.env.SUPABASE_JWT_SECRET!;
+
+export async function signToken(
+  draftId: string, 
+  role: 'master' | 'player', 
+  keyHash: string
+): Promise<string> {
+  const secret = new TextEncoder().encode(supabaseJwtSecret);
+  const jwt = await new SignJWT({ draft_id: draftId, role, key_hash: keyHash })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('30d')
+    .sign(secret);
+  return jwt;
+}
 
 /**
- * Set admin key in cookie
+ * Set draft key in cookies
  */
-export async function setAdminKey(gameId: string, adminKey: string) {
+export async function saveDraftKey(draftId: string, role: 'master' | 'player', keyHash: string) {
+  const token = await signToken(draftId, role, keyHash);
   const cookieStore = await cookies();
-  cookieStore.set(`${ADMIN_KEY_COOKIE}_${gameId}`, adminKey, {
+  cookieStore.set(`draft_${draftId}`, encodeURIComponent(token), {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
@@ -18,49 +33,9 @@ export async function setAdminKey(gameId: string, adminKey: string) {
 }
 
 /**
- * Get admin key from cookie
+ * Clear draft key from cookies
  */
-export async function getAdminKey(gameId: string): Promise<string | null> {
+export async function clearDraftKey(draftId: string) {
   const cookieStore = await cookies();
-  const cookie = cookieStore.get(`${ADMIN_KEY_COOKIE}_${gameId}`);
-  return cookie?.value || null;
-}
-
-/**
- * Set player key in cookie
- */
-export async function setPlayerKey(characterId: string, playerKey: string) {
-  const cookieStore = await cookies();
-  cookieStore.set(`${PLAYER_KEY_COOKIE}_${characterId}`, playerKey, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 60 * 60 * 24 * 30, // 30 days
-    path: '/',
-  });
-}
-
-/**
- * Get player key from cookie
- */
-export async function getPlayerKey(characterId: string): Promise<string | null> {
-  const cookieStore = await cookies();
-  const cookie = cookieStore.get(`${PLAYER_KEY_COOKIE}_${characterId}`);
-  return cookie?.value || null;
-}
-
-/**
- * Clear admin key from cookie
- */
-export async function clearAdminKey(gameId: string) {
-  const cookieStore = await cookies();
-  cookieStore.delete(`${ADMIN_KEY_COOKIE}_${gameId}`);
-}
-
-/**
- * Clear player key from cookie
- */
-export async function clearPlayerKey(characterId: string) {
-  const cookieStore = await cookies();
-  cookieStore.delete(`${PLAYER_KEY_COOKIE}_${characterId}`);
+  cookieStore.delete(`draft_${draftId}`);
 }

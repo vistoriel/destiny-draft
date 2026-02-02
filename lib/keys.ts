@@ -1,27 +1,22 @@
 import crypto from 'crypto';
 
+const secret = process.env.KEY_ENCRYPTION_SECRET;
+
 /**
  * Generate a secure random key with a prefix
  */
-export function generateKey(prefix: 'admin' | 'player'): string {
+export function generateKey(prefix: 'master' | 'player'): string {
   const randomBytes = crypto.randomBytes(32);
   const randomString = randomBytes.toString('base64url').slice(0, 32);
-  return `${prefix}-${randomString}`;
+  return `${prefix}_${randomString}`;
 }
 
 /**
  * Hash a key for secure storage in database
  */
 export function hashKey(key: string): string {
-  const secret = process.env.KEY_ENCRYPTION_SECRET;
-  if (!secret) {
-    throw new Error('KEY_ENCRYPTION_SECRET is not defined');
-  }
-  
-  return crypto
-    .createHmac('sha256', secret)
-    .update(key)
-    .digest('hex');
+  if (!secret) throw new Error('KEY_ENCRYPTION_SECRET is not defined');
+  return crypto.createHmac('sha256', secret).update(key).digest('hex');
 }
 
 /**
@@ -36,15 +31,10 @@ export function verifyKey(key: string, hash: string): boolean {
 }
 
 /**
- * Generate an admin key for game creation
+ * Generate a master key and hash for game creation
  */
-export function generateAdminKey(): string {
-  return generateKey('admin');
-}
-
-/**
- * Generate a player key for character claiming
- */
-export function generatePlayerKey(): string {
-  return generateKey('player');
+export function generateKeyAndHash(prefix: 'master' | 'player'): [string, string] {
+  const key = generateKey(prefix);
+  const hash = hashKey(key);
+  return [key, hash];
 }
