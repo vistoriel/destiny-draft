@@ -5,7 +5,7 @@ import type { Database } from './database.types';
 const supabaseUrl = process.env.SUPABASE_URL!;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY!;
 
-export async function useServerSupabase(draftId: string) {
+export async function createServerSupabase(draftId: string) {
   const cookieStore = await cookies();
   
   // 1. Get the Keyring Cookie

@@ -4,7 +4,7 @@ import type { Database } from './database.types';
 const supabaseUrl = process.env.SUPABASE_URL!;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY!;
 
-export function useClientSupabase(token?: string) {
+export function createClientSupabase(token?: string) {
   return createClient<Database>(supabaseUrl, supabaseAnonKey, {
     global: {
       headers: token ? { Authorization: `Bearer ${token}` } : {},

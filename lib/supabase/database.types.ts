@@ -25,7 +25,7 @@ export type Database = {
           mental_damage: number
           name: string | null
           physical_damage: number
-          player_key: string
+          player_key_hash: string | null
           player_name: string | null
           role: string | null
           shock_level: number
@@ -41,7 +41,7 @@ export type Database = {
           mental_damage?: number
           name?: string | null
           physical_damage?: number
-          player_key: string
+          player_key_hash?: string | null
           player_name?: string | null
           role?: string | null
           shock_level?: number
@@ -57,7 +57,7 @@ export type Database = {
           mental_damage?: number
           name?: string | null
           physical_damage?: number
-          player_key?: string
+          player_key_hash?: string | null
           player_name?: string | null
           role?: string | null
           shock_level?: number
@@ -80,7 +80,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
-          master_key: string
+          master_key_hash: string
           master_name: string
           title: string
           world: string | null
@@ -91,7 +91,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
-          master_key: string
+          master_key_hash: string
           master_name: string
           title: string
           world?: string | null
@@ -102,7 +102,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
-          master_key?: string
+          master_key_hash?: string
           master_name?: string
           title?: string
           world?: string | null
