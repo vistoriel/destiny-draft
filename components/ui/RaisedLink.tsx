@@ -1,8 +1,10 @@
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
-export function RaisedButton({ children, className, title }: { children?: React.ReactNode, className?: string, title?: string }) {
+export function RaisedLink({ href, children, className, title }: { href: string, children?: React.ReactNode, className?: string, title?: string }) {
   return (
-    <button 
+    <Link 
+      href={href}
       title={title}
       className={cn(
         "group mt-0.5 relative bg-image-sketch font-bold rounded-md cursor-pointer border-b border-stone-900",
@@ -12,6 +14,6 @@ export function RaisedButton({ children, className, title }: { children?: React.
       <span className="relative -top-0.5 group-active:top-0 block uppercase bg-stone-50 p-2 rounded-md border-2 border-stone-900">
         { children }
       </span>
-    </button>
+    </Link>
   )
 }
