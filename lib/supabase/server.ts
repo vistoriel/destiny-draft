@@ -1,63 +1,29 @@
-import { createServerClient } from '@supabase/ssr';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
-import type { Database } from '../database.types';
+import type { Database } from './database.types';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const supabaseUrl = process.env.SUPABASE_URL!;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY!;
 
-/**
- * Server-side Supabase client for use in Server Components, Server Actions, and Route Handlers
- * Properly handles cookies for session management (even though we're not using Supabase Auth)
- */
-export async function createClient() {
+export async function useServerSupabase(draftId: string) {
   const cookieStore = await cookies();
+  
+  // 1. Get the Keyring Cookie
+  const tokensCookie = cookieStore.get('draft_tokens');
+  const tokens = tokensCookie?.value ? JSON.parse(decodeURIComponent(tokensCookie.value)) : {};
+  
+  // 2. Get the specific JWT for this draft
+  const token = tokens[draftId];
 
-  return createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll();
-      },
-      setAll(cookiesToSet) {
-        try {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options)
-          );
-        } catch {
-          // The `setAll` method was called from a Server Component.
-          // This can be ignored if you have middleware refreshing user sessions.
-        }
-      },
-    },
-  });
-}
-
-/**
- * Admin client with service role key - bypasses Row Level Security
- * Use this for operations that need elevated permissions (key validation, admin operations)
- * WARNING: Only use this in secure server-side contexts (API routes, server actions)
- */
-export async function createAdminClient() {
-  const cookieStore = await cookies();
-
-  return createServerClient<Database>(supabaseUrl, supabaseServiceKey, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll();
-      },
-      setAll(cookiesToSet) {
-        try {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options)
-          );
-        } catch {
-          // Ignore cookie errors in Server Components
-        }
-      },
+  // 3. Create client with that token
+  // If token is missing, it will default to 'anon' (and likely be blocked by RLS)
+  return createSupabaseClient<Database>(supabaseUrl, supabaseAnonKey, {
+    global: {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
     },
     auth: {
+      persistSession: false, // We manage tokens ourselves
       autoRefreshToken: false,
-      persistSession: false,
-    },
+    }
   });
 }

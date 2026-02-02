@@ -1,13 +1,16 @@
-import { createBrowserClient } from '@supabase/ssr';
-import type { Database } from '../database.types';
+import { createClient } from '@supabase/supabase-js';
+import type { Database } from './database.types';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.SUPABASE_URL!;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY!;
 
-/**
- * Client-side Supabase client for use in Client Components
- * Automatically handles cookie-based session management
- */
-export function createClient() {
-  return createBrowserClient<Database>(supabaseUrl, supabaseAnonKey);
+export function useClientSupabase(token?: string) {
+  return createClient<Database>(supabaseUrl, supabaseAnonKey, {
+    global: {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    },
+    auth: {
+      persistSession: false,
+    }
+  });
 }
