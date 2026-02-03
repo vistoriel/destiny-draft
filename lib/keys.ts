@@ -41,14 +41,28 @@ export function generateKeyAndHash(prefix: 'master' | 'player'): [string, string
   return [key, hash];
 }
 
-export async function signToken(
-  draftId: string, 
-  role: 'master' | 'player', 
+export async function signMasterToken(
+  draftId: string,  
   keyHash: string
 ): Promise<string> {
   if (!supabaseJwtSecret) throw new Error('SUPABASE_JWT_SECRET is not defined');
   const secret = new TextEncoder().encode(supabaseJwtSecret);
-  const jwt = await new SignJWT({ draft_id: draftId, role, key_hash: keyHash })
+  const jwt = await new SignJWT({ draft_id: draftId, role: 'master', key_hash: keyHash })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('30d')
+    .sign(secret);
+  return jwt;
+}
+
+export async function signPlayerToken(
+  draftId: string, 
+  characterId: string,
+  keyHash: string
+): Promise<string> {
+  if (!supabaseJwtSecret) throw new Error('SUPABASE_JWT_SECRET is not defined');
+  const secret = new TextEncoder().encode(supabaseJwtSecret);
+  const jwt = await new SignJWT({ draft_id: draftId, character_id: characterId, role: 'player', key_hash: keyHash })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('30d')

@@ -3,7 +3,7 @@
 import { CreateDraftProps } from "@/lib/schemas";
 import { createServiceSupabase } from '@/lib/supabase';
 import { redirect } from 'next/navigation';
-import { generateKeyAndHash, signToken } from '@/lib/keys';
+import { generateKeyAndHash, signMasterToken } from '@/lib/keys';
 import { saveDraftToken } from "@/lib/session";
 
 export async function createDraft({ draft, characters }: CreateDraftProps) {
@@ -35,7 +35,7 @@ export async function createDraft({ draft, characters }: CreateDraftProps) {
   }
 
   // Sign and save draft token in the cookies
-  const token = await signToken(createdDraft.id, 'master', masterKeyHash);
+  const token = await signMasterToken(createdDraft.id, masterKeyHash);
   await saveDraftToken(createdDraft.id, token);
 
   // Redirect to the draft page with master key in URL

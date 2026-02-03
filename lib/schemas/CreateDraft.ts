@@ -1,11 +1,11 @@
 import z from "zod";
 
 export const CreateCharacterSchema = z.object({
-  character_name: z.string().min(2).max(64).optional(),
+  name: z.string().min(2).max(64).optional(),
   player_name: z.string().min(2).max(32).optional(),
-}).refine(data => data.character_name || data.player_name, {
-  message: "Either character_name or player_name is required",
-  path: ["player_name"] // path of error
+}).refine(data => data.name || data.player_name, {
+  message: "Either name or player_name is required",
+  path: ["player_name"]
 });
 
 export const CreateDraftSchema = z.object({
