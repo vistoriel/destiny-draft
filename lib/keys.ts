@@ -1,6 +1,8 @@
 import crypto from 'crypto';
+import { SignJWT } from 'jose';
 
-const secret = process.env.KEY_ENCRYPTION_SECRET;
+const keySecret = process.env.KEY_ENCRYPTION_SECRET;
+const supabaseJwtSecret = process.env.SUPABASE_JWT_SECRET!;
 
 /**
  * Generate a secure random key with a prefix
@@ -15,8 +17,8 @@ export function generateKey(prefix: 'master' | 'player'): string {
  * Hash a key for secure storage in database
  */
 export function hashKey(key: string): string {
-  if (!secret) throw new Error('KEY_ENCRYPTION_SECRET is not defined');
-  return crypto.createHmac('sha256', secret).update(key).digest('hex');
+  if (!keySecret) throw new Error('KEY_ENCRYPTION_SECRET is not defined');
+  return crypto.createHmac('sha256', keySecret).update(key).digest('hex');
 }
 
 /**
@@ -37,4 +39,19 @@ export function generateKeyAndHash(prefix: 'master' | 'player'): [string, string
   const key = generateKey(prefix);
   const hash = hashKey(key);
   return [key, hash];
+}
+
+export async function signToken(
+  draftId: string, 
+  role: 'master' | 'player', 
+  keyHash: string
+): Promise<string> {
+  if (!supabaseJwtSecret) throw new Error('SUPABASE_JWT_SECRET is not defined');
+  const secret = new TextEncoder().encode(supabaseJwtSecret);
+  const jwt = await new SignJWT({ draft_id: draftId, role, key_hash: keyHash })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('30d')
+    .sign(secret);
+  return jwt;
 }

@@ -3,8 +3,8 @@
 import { CreateDraftProps } from "@/lib/schemas";
 import { createServiceSupabase } from '@/lib/supabase';
 import { redirect } from 'next/navigation';
-import { generateKeyAndHash } from '@/lib/keys';
-import { saveDraftKey } from "@/lib/session";
+import { generateKeyAndHash, signToken } from '@/lib/keys';
+import { saveDraftToken } from "@/lib/session";
 
 export async function createDraft({ draft, characters }: CreateDraftProps) {
   // Generate master key and hash
@@ -34,8 +34,9 @@ export async function createDraft({ draft, characters }: CreateDraftProps) {
     }
   }
 
-  // Save draft key in cookies
-  await saveDraftKey(createdDraft.id, 'master', masterKeyHash);
+  // Sign and save draft token in the cookies
+  const token = await signToken(createdDraft.id, 'master', masterKeyHash);
+  await saveDraftToken(createdDraft.id, token);
 
   // Redirect to the draft page with master key in URL
   redirect(`/draft/${createdDraft.id}?master_key=${masterKey}`);
