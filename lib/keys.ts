@@ -1,8 +1,9 @@
-import crypto from 'crypto';
+import crypto, { createSecretKey } from 'crypto';
 import { SignJWT } from 'jose';
 
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseJwtSecret = process.env.SUPABASE_JWT_SECRET;
 const keySecret = process.env.KEY_ENCRYPTION_SECRET;
-const supabaseJwtSecret = process.env.SUPABASE_JWT_SECRET!;
 
 /**
  * Generate a secure random key with a prefix
@@ -46,9 +47,19 @@ export async function signMasterToken(
   keyHash: string
 ): Promise<string> {
   if (!supabaseJwtSecret) throw new Error('SUPABASE_JWT_SECRET is not defined');
-  const secret = new TextEncoder().encode(supabaseJwtSecret);
-  const jwt = await new SignJWT({ draft_id: draftId, role: 'master', key_hash: keyHash })
+  if (!supabaseUrl) throw new Error('SUPABASE_URL is not defined');
+  const secret = createSecretKey(supabaseJwtSecret, 'base64url');
+  const projectId = supabaseUrl.replace('https://', '').replace('.supabase.co', '');
+  const jwt = await new SignJWT({ 
+    draft_id: draftId, 
+    key_hash: keyHash,
+    user_type: 'master',
+    role: 'authenticated',
+    aud: 'authenticated'
+  })
     .setProtectedHeader({ alg: 'HS256' })
+    .setIssuer(`https://${projectId}.supabase.co/auth/v1`)
+    .setAudience('authenticated')
     .setIssuedAt()
     .setExpirationTime('30d')
     .sign(secret);
@@ -61,9 +72,20 @@ export async function signPlayerToken(
   keyHash: string
 ): Promise<string> {
   if (!supabaseJwtSecret) throw new Error('SUPABASE_JWT_SECRET is not defined');
-  const secret = new TextEncoder().encode(supabaseJwtSecret);
-  const jwt = await new SignJWT({ draft_id: draftId, character_id: characterId, role: 'player', key_hash: keyHash })
+  if (!supabaseUrl) throw new Error('SUPABASE_URL is not defined');
+  const secret = createSecretKey(supabaseJwtSecret, 'base64url');
+  const projectId = supabaseUrl.replace('https://', '').replace('.supabase.co', '');
+  const jwt = await new SignJWT({ 
+    draft_id: draftId, 
+    character_id: characterId,
+    key_hash: keyHash,
+    user_type: 'player',
+    role: 'authenticated',
+    aud: 'authenticated'
+  })
     .setProtectedHeader({ alg: 'HS256' })
+    .setIssuer(`https://${projectId}.supabase.co/auth/v1`)
+    .setAudience('authenticated')
     .setIssuedAt()
     .setExpirationTime('30d')
     .sign(secret);
