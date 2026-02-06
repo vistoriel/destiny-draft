@@ -1,6 +1,27 @@
 import crypto, { createSecretKey } from 'crypto';
 import { SignJWT } from 'jose';
 
+export type BaseTokenPayload = {
+  draft_id: string;
+  key_hash: string;
+  role: string;
+  aud: string;
+  iss: string;
+  iat: number;
+  exp: number;
+};
+
+export type MasterTokenPayload = {
+  user_type: 'master';
+} & BaseTokenPayload;
+
+export type PlayerTokenPayload = {
+  user_type: 'player';
+  character_id: string;
+} & BaseTokenPayload;
+
+export type DraftTokenPayload = MasterTokenPayload | PlayerTokenPayload;
+
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseJwtSecret = process.env.SUPABASE_JWT_SECRET;
 const keySecret = process.env.KEY_ENCRYPTION_SECRET;
@@ -90,4 +111,19 @@ export async function signPlayerToken(
     .setExpirationTime('30d')
     .sign(secret);
   return jwt;
+}
+
+/**
+ * Decode JWT payload without verification (for reading user_type)
+ * Verification is handled by Supabase
+ */
+export function decodeTokenPayload(token: string): DraftTokenPayload | null {
+  try {
+    const [, payload] = token.split('.');
+    if (!payload) return null;
+    const decoded = Buffer.from(payload, 'base64url').toString('utf-8');
+    return JSON.parse(decoded) as DraftTokenPayload;
+  } catch {
+    return null;
+  }
 }
