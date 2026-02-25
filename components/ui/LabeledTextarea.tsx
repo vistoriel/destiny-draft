@@ -1,26 +1,23 @@
 'use client';
 
-import { InputHTMLAttributes, useState, useEffect, useRef } from 'react';
+import { TextareaHTMLAttributes, useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
-interface LabeledInputProps extends InputHTMLAttributes<HTMLInputElement> {
+interface LabeledTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
-  variant?: 'title' | 'regular';
   containerClassName?: string;
   error?: string;
   saveStatus?: 'idle' | 'saving' | 'saved' | 'error';
 }
 
-export function LabeledInput({
+export function LabeledTextarea({
   label,
-  variant = 'regular',
   className,
   containerClassName,
   error,
-  type = 'text',
   saveStatus = 'idle',
   ...props
-}: LabeledInputProps) {
+}: LabeledTextareaProps) {
   const [showStatus, setShowStatus] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -66,12 +63,9 @@ export function LabeledInput({
 
   return (
     <div className={cn('flex flex-col items-center gap-1', containerClassName)}>
-      <input
-        type={type}
+      <textarea
         className={cn(
-          'text-center border-b-2 border-stone-900 placeholder:text-stone-300 rounded-xs focus:bg-primary-50 active:border-primary-900 focus:outline-2 focus-visible:outline-2 focus:border-primary-900 outline-primary-600 outline-offset-0 focus:z-10',
-          variant === 'title' && 'text-3xl font-bold min-w-96 w-96',
-          variant === 'regular' && 'min-w-20 w-20',
+          'block w-full h-60 leading-snug resize-none p-1.5 placeholder:text-stone-300 border-2 border-stone-900 rounded-xs cursor-text active:border-primary-900 focus:bg-primary-50 focus:outline-2 outline-primary-600 focus:z-10 outline-offset-0',
           error && 'border-red-500',
           className
         )}
