@@ -1,16 +1,60 @@
 "use client";
 import Image from "next/image";
-import { LabeledInput } from "../ui";
+import { LabeledInput, LabeledTextarea } from "../ui";
 import { cn } from "@/lib/utils";
 import { UseFormRegister } from "react-hook-form";
 import { CreateDraftInput } from "@/lib/schemas";
 
+type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
+
 interface DraftHeaderProps {
   className?: string;
+  // Create mode props
   register?: UseFormRegister<CreateDraftInput>;
+  // Update mode props
+  mode?: 'create' | 'update';
+  draft?: {
+    title: string;
+    master_name: string;
+    description: string | null;
+    world: string | null;
+    basic_cards: number;
+    basic_experience: number;
+  };
+  isMaster?: boolean;
+  saveStatuses?: {
+    [key: string]: SaveStatus;
+  };
+  onFieldChange?: (fieldName: string, value: string | number) => void;
 }
 
-export function DraftHeader({ className, register }: DraftHeaderProps) {
+export function DraftHeader({ 
+  className, 
+  register, 
+  mode = 'create',
+  draft,
+  isMaster = false,
+  saveStatuses = {},
+  onFieldChange
+}: DraftHeaderProps) {
+  const isUpdateMode = mode === 'update';
+
+  const handleInputChange = (fieldName: string, value: string | number) => {
+    if (onFieldChange) {
+      onFieldChange(fieldName, value);
+    }
+  };
+
+  const handleNumberChange = (fieldName: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.valueAsNumber;
+    handleInputChange(fieldName, value);
+  };
+
+  const handleTextChange = (fieldName: string, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    handleInputChange(fieldName, value);
+  };
+
   return (
     <header className={cn('flex flex-col gap-4', className)}>
       <div className="flex gap-4">
@@ -23,52 +67,123 @@ export function DraftHeader({ className, register }: DraftHeaderProps) {
             alt="Character Image"
           />
           <div className="flex flex-col gap-2">
-            <LabeledInput 
-              label="world" 
-              className="w-54.5" 
-              placeholder="The World after Lemmarch" 
-              {...(register && register("draft.world"))}
-            />
+            {isUpdateMode ? (
+              <LabeledInput 
+                label="world" 
+                className="w-54.5" 
+                placeholder="The World after Lemmarch"
+                value={draft?.world || ''}
+                onChange={(e) => handleTextChange('world', e)}
+                disabled={!isMaster}
+                saveStatus={saveStatuses?.world || 'idle'}
+              />
+            ) : (
+              <LabeledInput 
+                label="world" 
+                className="w-54.5" 
+                placeholder="The World after Lemmarch" 
+                {...(register && register("draft.world"))}
+              />
+            )}
             <div className="flex items-end gap-4 w-54.5">
-              <LabeledInput 
-                className="w-full" 
-                label="basic cards" 
-                placeholder="3" 
-                type="number"
-                {...(register && register("draft.basic_cards", { valueAsNumber: true }))}
-              />
-              <LabeledInput 
-                className="w-full" 
-                label="basic experience"
-                type="number"
-                {...(register && register("draft.basic_experience", { valueAsNumber: true }))}
-              />
+              {isUpdateMode ? (
+                <>
+                  <LabeledInput 
+                    className="w-full" 
+                    label="basic cards" 
+                    placeholder="3" 
+                    type="number"
+                    value={draft?.basic_cards || 0}
+                    onChange={(e) => handleNumberChange('basic_cards', e)}
+                    disabled={!isMaster}
+                    saveStatus={saveStatuses?.basic_cards || 'idle'}
+                  />
+                  <LabeledInput 
+                    className="w-full" 
+                    label="basic experience"
+                    type="number"
+                    value={draft?.basic_experience || 0}
+                    onChange={(e) => handleNumberChange('basic_experience', e)}
+                    disabled={!isMaster}
+                    saveStatus={saveStatuses?.basic_experience || 'idle'}
+                  />
+                </>
+              ) : (
+                <>
+                  <LabeledInput 
+                    className="w-full" 
+                    label="basic cards" 
+                    placeholder="3" 
+                    type="number"
+                    {...(register && register("draft.basic_cards", { valueAsNumber: true }))}
+                  />
+                  <LabeledInput 
+                    className="w-full" 
+                    label="basic experience"
+                    type="number"
+                    {...(register && register("draft.basic_experience", { valueAsNumber: true }))}
+                  />
+                </>
+              )}
             </div>
           </div>
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex items-end gap-4">
-            <LabeledInput 
-              variant="title" 
-              label="game's name" 
-              placeholder="The Light of Moroklyn"
-              {...(register && register("draft.title"))}
-            />
-            <LabeledInput 
-              label="game master" 
-              className="w-26" 
-              placeholder="Sviatoslav"
-              {...(register && register("draft.master_name"))}
-            />
+            {isUpdateMode ? (
+              <>
+                <LabeledInput 
+                  variant="title" 
+                  label="game's name" 
+                  placeholder="The Light of Moroklyn"
+                  value={draft?.title || ''}
+                  onChange={(e) => handleTextChange('title', e)}
+                  disabled={!isMaster}
+                  saveStatus={saveStatuses?.title || 'idle'}
+                />
+                <LabeledInput 
+                  label="game master" 
+                  className="w-26" 
+                  placeholder="Sviatoslav"
+                  value={draft?.master_name || ''}
+                  onChange={(e) => handleTextChange('master_name', e)}
+                  disabled={!isMaster}
+                  saveStatus={saveStatuses?.master_name || 'idle'}
+                />
+              </>
+            ) : (
+              <>
+                <LabeledInput 
+                  variant="title" 
+                  label="game's name" 
+                  placeholder="The Light of Moroklyn"
+                  {...(register && register("draft.title"))}
+                />
+                <LabeledInput 
+                  label="game master" 
+                  className="w-26" 
+                  placeholder="Sviatoslav"
+                  {...(register && register("draft.master_name"))}
+                />
+              </>
+            )}
           </div>
-          <div className="flex flex-col gap-1 items-center">
-            <textarea
-              className="block w-full h-60 leading-snug resize-none p-1.5 placeholder:text-stone-300 border-2 border-stone-900 rounded-xs cursor-text active:border-primary-900 focus:bg-primary-50 focus:outline-2 outline-primary-600 focus:z-10 outline-offset-0"
+          {isUpdateMode ? (
+            <LabeledTextarea
               placeholder="The game's short description..."
+              value={draft?.description || ''}
+              onChange={(e) => handleTextChange('description', e)}
+              disabled={!isMaster}
+              label="game's description"
+              saveStatus={saveStatuses?.description || 'idle'}
+            />
+          ) : (
+            <LabeledTextarea
+              placeholder="The game's short description..."
+              label="game's description"
               {...(register && register("draft.description"))}
             />
-            <label className="text-xs text-stone-500 whitespace-nowrap text-nowrap">game&apos;s description</label>
-          </div>
+          )}
         </div>
       </div>
     </header>
