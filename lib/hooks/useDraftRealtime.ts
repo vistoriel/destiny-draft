@@ -17,12 +17,10 @@ export function useDraftRealtime(
   }, [onUpdate]);
 
   useEffect(() => {
-    // Create a unique channel name per draft
-    const channelName = `draft-changes-${draftId}`;
-
+    console.log(`Subscribing to realtime channel.`);
     // Set up the subscription
     const channel = client
-      .channel(channelName)
+      .channel('schema-db-changes')
       .on(
         'postgres_changes',
         {
@@ -33,6 +31,7 @@ export function useDraftRealtime(
         },
         (payload) => {
           // Call the callback with the new draft data
+          console.log('Received realtime payload:', payload);
           onUpdateRef.current(payload.new as Database['public']['Tables']['drafts']['Row']);
         }
       )

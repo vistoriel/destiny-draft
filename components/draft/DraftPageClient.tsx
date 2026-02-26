@@ -46,6 +46,7 @@ export function DraftPageClient({ initialDraft, isMaster, token }: DraftPageClie
 
   // Handle realtime updates from other users
   const handleRealtimeUpdate = useCallback((draft: Database['public']['Tables']['drafts']['Row']) => {
+    console.log('Received realtime update:', draft);
     setTitle(draft.title);
     setMasterName(draft.master_name);
     setDescription(draft.description ?? '');
