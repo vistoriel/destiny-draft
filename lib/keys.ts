@@ -22,7 +22,7 @@ export type PlayerTokenPayload = {
 
 export type DraftTokenPayload = MasterTokenPayload | PlayerTokenPayload;
 
-const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseJwtSecret = process.env.SUPABASE_JWT_SECRET;
 const keySecret = process.env.KEY_ENCRYPTION_SECRET;
 
