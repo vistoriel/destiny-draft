@@ -1,15 +1,13 @@
 import { cn } from "@/lib/utils";
-import { CharacterPlaceholder } from "../character/CharacterPlaceholder";
 import { Character, CharacterItem } from "../character/Character";
-import { UserType } from "@/lib/keys";
+import { CharacterPlaceholder } from "../character/CharacterPlaceholder";
 
-interface DraftCharactersProps {
+interface DraftCharacterSelectorProps {
   className?: string;
   characters: CharacterItem[];
-  userType: UserType;
 }
 
-export function DraftCharacters({ className, characters, userType }: DraftCharactersProps) {
+export function DraftCharacterSelector({ className, characters }: DraftCharacterSelectorProps) {
   return (
     <section className={cn('flex flex-col gap-5', className)}>
       <header className="flex gap-1 items-center">
@@ -20,7 +18,7 @@ export function DraftCharacters({ className, characters, userType }: DraftCharac
           <hr className="w-full border border-dashed border-stone-900 rounded-xs" />
         </div>
         <h2 className="uppercase mr-1 font-bold text-2xl text-stone-900 whitespace-nowrap text-nowrap">
-          Characters
+          Select your character
         </h2>
         <div className="w-full flex gap-0.5 items-center">
           <hr className="w-full border border-dashed border-stone-900 rounded-xs" />
@@ -31,12 +29,9 @@ export function DraftCharacters({ className, characters, userType }: DraftCharac
       </header>
       <div className="grid grid-cols-4 gap-4">
         { characters.map((character) => (
-          <Character 
-            key={character.id} 
-            character={character} 
-            disabled={userType.type === 'player' && userType.character_id !== character.id } />
+          <Character key={character.id} character={character} disabled={character.is_claimed} />
         ))}
-        { Array.from({ length: 4 - characters.length % 4 }, (_, index) => (
+        { Array.from({ length: (4 - characters.length % 4) % 4 }, (_, index) => (
           <CharacterPlaceholder key={index} />
         ))}
       </div>

@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getDraftToken } from '@/lib/session';
-import { decodeTokenPayload } from '@/lib/keys';
+import { decodeUserType } from '@/lib/keys';
 import { createServerSupabase } from '@/lib/supabase/server';
 import { DraftPageClient } from '@/components/draft';
 
@@ -13,27 +13,32 @@ export default async function DraftPage({ params }: DraftPageProps) {
 
   // Get user's token and determine if they're a master
   const token = await getDraftToken(draftId);
-  const payload = token ? decodeTokenPayload(token) : null;
-  const isMaster = payload?.user_type === 'master';
+  const userType = decodeUserType(token);
 
   // Create server Supabase client and fetch draft
   const supabase = await createServerSupabase(draftId);
-  const { data: draft, error } = await supabase
+  const { data: draft, error: draftError } = await supabase
     .from('drafts')
     .select('*')
     .eq('id', draftId)
     .single();
 
+  const { data: characters, error: charactersError } = await supabase
+    .from('characters')
+    .select('*')
+    .eq('draft_id', draftId);
+
   // Handle not found
-  if (error || !draft) {
+  if (draftError || charactersError || !draft || !characters) {
     notFound();
   }
 
   return (
     <DraftPageClient
       initialDraft={draft}
-      isMaster={isMaster}
+      userType={userType}
       token={token ?? undefined}
+      characters={characters}
     />
   );
 }

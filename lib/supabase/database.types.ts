@@ -21,7 +21,7 @@ export type Database = {
           extra_cards: number
           extra_experience: number
           id: string
-          is_claimed: boolean | null
+          is_claimed: boolean
           mental_damage: number
           name: string | null
           physical_damage: number
@@ -37,7 +37,7 @@ export type Database = {
           extra_cards?: number
           extra_experience?: number
           id?: string
-          is_claimed?: boolean | null
+          is_claimed?: boolean
           mental_damage?: number
           name?: string | null
           physical_damage?: number
@@ -53,7 +53,7 @@ export type Database = {
           extra_cards?: number
           extra_experience?: number
           id?: string
-          is_claimed?: boolean | null
+          is_claimed?: boolean
           mental_damage?: number
           name?: string | null
           physical_damage?: number

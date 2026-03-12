@@ -113,17 +113,29 @@ export async function signPlayerToken(
   return jwt;
 }
 
+export type UserType = {
+  type: 'master' | 'anon';
+} | {
+  type: 'player';
+  character_id: string;
+}
+
 /**
  * Decode JWT payload without verification (for reading user_type)
  * Verification is handled by Supabase
  */
-export function decodeTokenPayload(token: string): DraftTokenPayload | null {
+export function decodeUserType(token: string | null): UserType {
   try {
-    const [, payload] = token.split('.');
-    if (!payload) return null;
+    const [, payload] = token?.split('.') ?? [];
+    if (!payload) return { type: 'anon' };
     const decoded = Buffer.from(payload, 'base64url').toString('utf-8');
-    return JSON.parse(decoded) as DraftTokenPayload;
+    const tokenPayload = JSON.parse(decoded) as DraftTokenPayload;
+    if (tokenPayload.user_type === 'master') return { type: 'master' };
+    if (tokenPayload.user_type === 'player') {
+      return { type: 'player', character_id: tokenPayload.character_id };
+    }
+    return { type: 'anon' };
   } catch {
-    return null;
+    return { type: 'anon' };
   }
 }

@@ -7,6 +7,9 @@ import { DraftCharacters } from './DraftCharacters';
 import { createClientSupabase } from '@/lib/supabase/client';
 import { useDraftFormAutosave, useDraftRealtime } from '@/lib/hooks';
 import type { Database } from '@/lib/supabase/database.types';
+import { DraftCharacterSelector } from './DraftCharacterSelector';
+import { CharacterItem } from '../character/Character';
+import { UserType } from '@/lib/keys';
 
 interface DraftPageClientProps {
   initialDraft: {
@@ -18,11 +21,12 @@ interface DraftPageClientProps {
     basic_cards: number;
     basic_experience: number;
   };
-  isMaster: boolean;
+  characters: CharacterItem[];
+  userType: UserType;
   token?: string;
 }
 
-export function DraftPageClient({ initialDraft, isMaster, token }: DraftPageClientProps) {
+export function DraftPageClient({ initialDraft, characters, userType, token }: DraftPageClientProps) {
   // Create Supabase client
   const client = createClientSupabase(token);
 
@@ -43,7 +47,7 @@ export function DraftPageClient({ initialDraft, isMaster, token }: DraftPageClie
     form.watch,
     client,
     initialDraft.id,
-    isMaster,
+    userType.type === 'master',
     {
       title: initialDraft.title,
       master_name: initialDraft.master_name,
@@ -82,11 +86,14 @@ export function DraftPageClient({ initialDraft, isMaster, token }: DraftPageClie
       <DraftHeader
         className="px-12 pb-6 border-b border-stone-200"
         register={form.register}
-        isMaster={isMaster}
+        isMaster={userType.type === 'master'}
         saveStatuses={saveStatuses}
         defaultValue={initialDraft}
       />
-      <DraftCharacters className="px-12 pt-6" />
+      { userType.type === 'anon'
+        ? <DraftCharacterSelector className="px-12 pt-6" characters={characters} /> 
+        : <DraftCharacters className="px-12 pt-6" characters={characters} userType={userType} />
+      }
     </>
   );
 }
