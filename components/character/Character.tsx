@@ -7,16 +7,11 @@ export type CharacterItem = Database['public']['Tables']['characters']['Row'];
 export type CharacterProps = {
   className?: string;
   character: CharacterItem;
-  disabled?: boolean;
 }
-
-export function Character({ className, character, disabled }: CharacterProps) {
+export function Character({ className, character }: CharacterProps) {
   return (
     <article className={cn(
-      "flex flex-col items-center rounded-xs transition-transform",
-      disabled
-        ? 'opacity-50 cursor-not-allowed'
-        : 'hover:scale-105 focus:scale-105 active:scale-100 focus:outline-2 outline-primary-600 outline-offset-0 focus:z-10 cursor-pointer',
+      "flex flex-col items-center rounded-xs",
       className
     )}>
       <Image 

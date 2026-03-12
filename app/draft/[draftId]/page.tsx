@@ -26,7 +26,8 @@ export default async function DraftPage({ params }: DraftPageProps) {
   const { data: characters, error: charactersError } = await supabase
     .from('characters')
     .select('*')
-    .eq('draft_id', draftId);
+    .eq('draft_id', draftId)
+    .order('sort_order', { ascending: true });
 
   // Handle not found
   if (draftError || charactersError || !draft || !characters) {

@@ -24,7 +24,7 @@ export async function createDraft({ draft, characters }: CreateDraftProps) {
 
   // Insert characters if provided
   if (characters.length > 0) {
-    const charactersToInsert = characters.map(c => ({ ...c, draft_id: createdDraft.id }));
+    const charactersToInsert = characters.map((c, i) => ({ ...c, draft_id: createdDraft.id, sort_order: i }));
     const { error: charactersError } = await supabase
       .from('characters')
       .insert(charactersToInsert);

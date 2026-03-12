@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { CharacterPlaceholder } from "../character/CharacterPlaceholder";
 import { Character, CharacterItem } from "../character/Character";
 import { UserType } from "@/lib/keys";
+import Link from "next/link";
 
 interface DraftCharactersProps {
   className?: string;
@@ -31,14 +32,22 @@ export function DraftCharacters({ className, characters, userType }: DraftCharac
       </header>
       <div className="grid grid-cols-4 gap-4">
         { characters.map((character) => (
-          <Character 
-            key={character.id} 
-            character={character} 
-            disabled={userType.type === 'player' && userType.character_id !== character.id } />
+          userType.type === 'player' && userType.character_id !== character.id
+            ? <Character key={character.id} character={character} className="opacity-50 cursor-not-allowed" />
+            : <Link
+              key={character.id}
+              href={`/draft/${character.draft_id}/${character.id}`}
+              className="rounded-xs hover:scale-105 focus:scale-105 active:scale-100 focus:outline-2 outline-primary-600 outline-offset-0 focus:z-10 cursor-pointer transition-transform"
+            >
+              <Character character={character} />
+            </Link>
         ))}
-        { Array.from({ length: 4 - characters.length % 4 }, (_, index) => (
-          <CharacterPlaceholder key={index} />
-        ))}
+        { Array.from(
+          { length: userType.type === 'master' ? 4 - characters.length % 4 : (4 - characters.length % 4) % 4 }, 
+          (_, index) => (
+            <CharacterPlaceholder key={index} />
+          )
+        )}
       </div>
     </section>
   )

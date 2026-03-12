@@ -30,6 +30,7 @@ export type Database = {
           role: string | null
           shock_level: number
           sign: string | null
+          sort_order: number
         }
         Insert: {
           created_at?: string
@@ -46,6 +47,7 @@ export type Database = {
           role?: string | null
           shock_level?: number
           sign?: string | null
+          sort_order?: number
         }
         Update: {
           created_at?: string
@@ -62,6 +64,7 @@ export type Database = {
           role?: string | null
           shock_level?: number
           sign?: string | null
+          sort_order?: number
         }
         Relationships: [
           {

@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Character, CharacterItem } from "../character/Character";
 import { CharacterPlaceholder } from "../character/CharacterPlaceholder";
+import { selectCharacter } from "@/app/actions/select-character";
 
 interface DraftCharacterSelectorProps {
   className?: string;
@@ -29,7 +30,14 @@ export function DraftCharacterSelector({ className, characters }: DraftCharacter
       </header>
       <div className="grid grid-cols-4 gap-4">
         { characters.map((character) => (
-          <Character key={character.id} character={character} disabled={character.is_claimed} />
+          <button
+            key={character.id}
+            onClick={async () => await selectCharacter({ characterId: character.id })}
+            disabled={character.is_claimed}
+            className="rounded-xs not-disabled:hover:scale-105 focus:scale-105 active:scale-100 focus:outline-2 outline-primary-600 outline-offset-0 focus:z-10 cursor-pointer transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Character character={character} />
+          </button>
         ))}
         { Array.from({ length: (4 - characters.length % 4) % 4 }, (_, index) => (
           <CharacterPlaceholder key={index} />
