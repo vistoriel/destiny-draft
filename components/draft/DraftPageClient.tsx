@@ -84,6 +84,7 @@ export function DraftPageClient({ initialDraft, isMaster, token }: DraftPageClie
         register={form.register}
         isMaster={isMaster}
         saveStatuses={saveStatuses}
+        defaultValue={initialDraft}
       />
       <DraftCharacters className="px-12 pt-6" />
     </>
