@@ -39,7 +39,7 @@ export function useDraftFormAutosave(
 
   const getAutosaveDelay = useCallback(() => {
     const delayMs = process.env.NEXT_PUBLIC_AUTOSAVE_DELAY_MS;
-    return delayMs ? parseInt(delayMs, 10) : 2000;
+    return delayMs ? parseInt(delayMs, 10) : 1000;
   }, []);
 
   const saveToSupabase = useCallback(
@@ -68,13 +68,13 @@ export function useDraftFormAutosave(
         resetTimeoutRefs.current[fieldName] = setTimeout(() => {
           setSaveStatuses((prev) => ({ ...prev, [fieldName]: 'idle' }));
           resetTimeoutRefs.current[fieldName] = null;
-        }, 5000);
+        }, getAutosaveDelay() * 2);
       } catch (err) {
         console.error(`Failed to save ${fieldName}:`, err);
         setSaveStatuses((prev) => ({ ...prev, [fieldName]: 'error' }));
       }
     },
-    [client, draftId]
+    [client, draftId, getAutosaveDelay]
   );
 
   useEffect(() => {

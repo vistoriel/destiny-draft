@@ -46,7 +46,7 @@ export function DraftHeader<T extends FieldValues>({
               className="w-54.5" 
               placeholder="The World after Lemmarch"
               disabled={!isMaster}
-              saveStatus={saveStatuses?.world || 'idle'}
+              status={saveStatuses?.world || 'idle'}
               defaultValue={defaultValue.world ?? ''}
               {...register(getFieldName("world"))}
             />
@@ -57,7 +57,7 @@ export function DraftHeader<T extends FieldValues>({
                 placeholder="3" 
                 type="number"
                 disabled={!isMaster}
-                saveStatus={saveStatuses?.basic_cards || 'idle'}
+                status={saveStatuses?.basic_cards || 'idle'}
                 defaultValue={defaultValue.basic_cards ?? 0}
                 {...register(getFieldName("basic_cards"), { valueAsNumber: true })}
               />
@@ -66,7 +66,7 @@ export function DraftHeader<T extends FieldValues>({
                 label="basic experience"
                 type="number"
                 disabled={!isMaster}
-                saveStatus={saveStatuses?.basic_experience || 'idle'}
+                status={saveStatuses?.basic_experience || 'idle'}
                 defaultValue={defaultValue.basic_experience ?? 0}
                 {...register(getFieldName("basic_experience"), { valueAsNumber: true })}
               />
@@ -80,7 +80,7 @@ export function DraftHeader<T extends FieldValues>({
               label="game's name" 
               placeholder="The Light of Moroklyn"
               disabled={!isMaster}
-              saveStatus={saveStatuses?.title || 'idle'}
+              status={saveStatuses?.title || 'idle'}
               defaultValue={defaultValue.title ?? ''}
               {...register(getFieldName("title"))}
             />
@@ -89,7 +89,7 @@ export function DraftHeader<T extends FieldValues>({
               className="w-26" 
               placeholder="Sviatoslav"
               disabled={!isMaster}
-              saveStatus={saveStatuses?.master_name || 'idle'}
+              status={saveStatuses?.master_name || 'idle'}
               defaultValue={defaultValue.master_name ?? ''}
               {...register(getFieldName("master_name"))}
             />
@@ -98,7 +98,7 @@ export function DraftHeader<T extends FieldValues>({
             placeholder="The game's short description..."
             label="game's description"
             disabled={!isMaster}
-            saveStatus={saveStatuses?.description || 'idle'}
+            status={saveStatuses?.description || 'idle'}
             defaultValue={defaultValue.description ?? ''}
             {...register(getFieldName("description"))}
           />
