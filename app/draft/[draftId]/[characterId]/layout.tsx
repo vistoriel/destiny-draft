@@ -3,10 +3,10 @@ import { CharacterNav } from "@/components/character/CharacterNav";
 
 export type CharacterLayoutProps = Readonly<{
   children: React.ReactNode;
-  params: {
+  params: Promise<{
     draftId: string;
     characterId: string;
-  };
+  }>;
 }>;
 
 export default async function CharacterLayout({ children, params }: CharacterLayoutProps) {
