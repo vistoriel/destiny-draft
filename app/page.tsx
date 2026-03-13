@@ -18,7 +18,7 @@ export default function Home() {
           of your journey with Destiny
         </h1>
         <p className="w-180 text-stone-700">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Hic, doloribus illum. Deleniti ullam voluptates, dolore fuga possimus iste, officia quo molestiae eum voluptatibus saepe, tenetur cum quidem! Magnam, explicabo sunt!
+          No more wrestling with spreadsheets or scribbling on napkins. We make setting up your next campaign a breeze! Just create a game, send a link to your friends, and watch as your ragtag group of adventurers comes to life.
         </p>
         <ChevronDown size={32} className="text-stone-300"/> 
       </div>
