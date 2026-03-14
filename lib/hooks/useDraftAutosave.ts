@@ -29,9 +29,15 @@ export function useDraftAutosave(draftId: string, watch: UseFormWatch<DraftInput
   // function to perform the actual save to Supabase
   const performSave = useCallback(
     async (fieldName: DraftInputField, value: string | number) => {
+      // validate the field value
+      const fieldSchema = DraftSchema.pick({ [fieldName]: true } as Record<DraftInputField, true>);
+      const result = fieldSchema.safeParse({ [fieldName]: value });
+      if (!result.success) return setFieldStatuses(prev => ({ ...prev, [fieldName]: 'error' }));
+
+      // perform the update in Supabase
       const { error } = await supabase
         .from('drafts')
-        .update({ [fieldName]: value })
+        .update({ [fieldName]: result.data[fieldName] })
         .eq('id', draftId);
       if (!error) return setFieldStatuses(prev => ({ ...prev, [fieldName]: 'idle' }));
       console.error('Error saving draft:', error);
@@ -58,14 +64,9 @@ export function useDraftAutosave(draftId: string, watch: UseFormWatch<DraftInput
       if (userType.type !== 'master') return;
       if (!name || !type) return;
 
-      // validate the field value
-      const fieldSchema = DraftSchema.pick({ [name]: true } as Record<DraftInputField, true>);
-      const result = fieldSchema.safeParse({ [name]: value[name] });
-      if (!result.success) return setFieldStatuses(prev => ({ ...prev, [name]: 'error' }));
-
       // update status and start the debounce timer
       setFieldStatuses(prev => ({ ...prev, [name]: 'saving' }));
-      debouncedSaves[name](result.data[name]);
+      debouncedSaves[name](value[name]);
     });
 
     // cleanup subscription on unmount
