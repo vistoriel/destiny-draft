@@ -1,25 +1,26 @@
-import { useEffect, useRef } from 'react';
-import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '@/lib/supabase/database.types';
+import { useCallback, useEffect, useRef } from 'react';
 import type { RealtimeChannel } from '@supabase/supabase-js';
+import { DraftRow } from '../supabase';
+import { useIdentityContext } from '@/components/draft/IdentityContext';
+import { DraftInput, DraftSchema } from '../schemas';
+import { UseFormReset } from 'react-hook-form';
 
-export function useDraftRealtime(
-  client: SupabaseClient<Database>,
-  draftId: string,
-  onUpdate: (draft: Database['public']['Tables']['drafts']['Row']) => void
-): void {
+export function useDraftRealtime(draftId: string, reset: UseFormReset<DraftInput>): void {
+  const { supabase } = useIdentityContext();
   const channelRef = useRef<RealtimeChannel | null>(null);
-  const onUpdateRef = useRef(onUpdate);
 
-  // Keep the ref updated without causing re-subscriptions
-  useEffect(() => {
-    onUpdateRef.current = onUpdate;
-  }, [onUpdate]);
+  const handleRealtimeUpdate = useCallback(
+    (draft: DraftRow) => {
+      console.log('Received realtime update:', draft);
+      reset(DraftSchema.parse(draft), { keepDirty: true, keepTouched: true });
+    },
+    [reset],
+  );
 
   useEffect(() => {
     console.log(`Subscribing to realtime channel.`);
     // Set up the subscription
-    const channel = client
+    const channel = supabase
       .channel('schema-db-changes')
       .on(
         'postgres_changes',
@@ -29,11 +30,7 @@ export function useDraftRealtime(
           table: 'drafts',
           filter: `id=eq.${draftId}`,
         },
-        (payload) => {
-          // Call the callback with the new draft data
-          console.log('Received realtime payload:', payload);
-          onUpdateRef.current(payload.new as Database['public']['Tables']['drafts']['Row']);
-        }
+        payload => handleRealtimeUpdate(payload.new as DraftRow),
       )
       .subscribe();
 
@@ -41,9 +38,7 @@ export function useDraftRealtime(
 
     // Cleanup on unmount
     return () => {
-      if (channelRef.current) {
-        client.removeChannel(channelRef.current);
-      }
+      if (channelRef.current) supabase.removeChannel(channelRef.current);
     };
-  }, [client, draftId]);
+  }, [supabase, draftId, handleRealtimeUpdate]);
 }

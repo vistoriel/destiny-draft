@@ -17,7 +17,7 @@ const draftFields: DraftInputField[] = [
   'basic_experience',
 ];
 
-export function useDraftAutosave(watch: UseFormWatch<DraftInput>, draftId: string) {
+export function useDraftAutosave(draftId: string, watch: UseFormWatch<DraftInput>) {
   // get user type and supabase client from context
   const { userType, supabase } = useIdentityContext();
 

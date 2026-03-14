@@ -15,7 +15,7 @@ type DraftFormProps = {
 };
 
 export function DraftForm({ initialDraft }: DraftFormProps) {
-  const { userType, supabase: client } = useIdentityContext();
+  const { userType } = useIdentityContext();
 
   // Initialize form with initial draft values
   const form = useForm({
@@ -24,19 +24,10 @@ export function DraftForm({ initialDraft }: DraftFormProps) {
   });
 
   // Set up autosave for masters
-  const { fieldStatuses } = useDraftAutosave(form.watch, initialDraft.id);
-
-  // Handle realtime updates from other users
-  const handleRealtimeUpdate = useCallback(
-    (draft: DraftRow) => {
-      console.log('Received realtime update:', draft);
-      form.reset(DraftSchema.parse(draft), { keepDirty: true, keepTouched: true });
-    },
-    [form],
-  );
+  const { fieldStatuses } = useDraftAutosave(initialDraft.id, form.watch);
 
   // Subscribe to realtime updates
-  useDraftRealtime(client, initialDraft.id, handleRealtimeUpdate);
+  useDraftRealtime(initialDraft.id, form.reset);
 
   return (
     <DraftHeader
