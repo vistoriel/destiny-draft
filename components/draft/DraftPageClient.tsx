@@ -4,12 +4,11 @@ import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { DraftHeader } from './DraftHeader';
 import { DraftCharacters } from './DraftCharacters';
-import { createClientSupabase } from '@/lib/supabase/client';
 import { useDraftFormAutosave, useDraftRealtime } from '@/lib/hooks';
 import type { Database } from '@/lib/supabase/database.types';
 import { DraftCharacterSelector } from './DraftCharacterSelector';
 import { CharacterItem } from '../character/Character';
-import { UserType } from '@/lib/keys';
+import { useIdentityContext } from './IdentityContext';
 
 interface DraftPageClientProps {
   initialDraft: {
@@ -22,13 +21,10 @@ interface DraftPageClientProps {
     basic_experience: number;
   };
   characters: CharacterItem[];
-  userType: UserType;
-  token?: string;
 }
 
-export function DraftPageClient({ initialDraft, characters, userType, token }: DraftPageClientProps) {
-  // Create Supabase client
-  const client = createClientSupabase(token);
+export function DraftPageClient({ initialDraft, characters }: DraftPageClientProps) {
+  const { userType, supabase: client } = useIdentityContext();
 
   // Initialize form with initial draft values
   const form = useForm({
@@ -86,13 +82,13 @@ export function DraftPageClient({ initialDraft, characters, userType, token }: D
       <DraftHeader
         className="px-12 pb-6 border-b border-stone-200"
         register={form.register}
-        isMaster={userType.type === 'master'}
         saveStatuses={saveStatuses}
         defaultValue={initialDraft}
+        isMaster={userType.type === 'master'}
       />
       { userType.type === 'anon'
         ? <DraftCharacterSelector className="px-12 pt-6" characters={characters} /> 
-        : <DraftCharacters className="px-12 pt-6" characters={characters} userType={userType} />
+        : <DraftCharacters className="px-12 pt-6" characters={characters} />
       }
     </>
   );

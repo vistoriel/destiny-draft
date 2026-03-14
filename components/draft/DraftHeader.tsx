@@ -10,21 +10,21 @@ type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 interface DraftHeaderProps<T extends FieldValues> {
   className?: string;
   register: UseFormRegister<T>;
-  isMaster?: boolean;
   saveStatuses?: {
     [key: string]: SaveStatus;
   };
   fieldPrefix?: string;
   defaultValue?: UpdateDraftInput;
+  isMaster?: boolean;
 }
 
 export function DraftHeader<T extends FieldValues>({ 
   className, 
   register,
-  isMaster = true,
   saveStatuses = {},
   fieldPrefix = '',
   defaultValue = {},
+  isMaster = false,
 }: DraftHeaderProps<T>) {
   const getFieldName = (field: string): Path<T> => 
     (fieldPrefix ? `${fieldPrefix}.${field}` : field) as Path<T>;

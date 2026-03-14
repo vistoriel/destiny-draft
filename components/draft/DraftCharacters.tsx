@@ -1,16 +1,16 @@
 import { cn } from "@/lib/utils";
 import { CharacterPlaceholder } from "../character/CharacterPlaceholder";
 import { Character, CharacterItem } from "../character/Character";
-import { UserType } from "@/lib/keys";
 import Link from "next/link";
+import { useIdentityContext } from "./IdentityContext";
 
 interface DraftCharactersProps {
   className?: string;
   characters: CharacterItem[];
-  userType: UserType;
 }
 
-export function DraftCharacters({ className, characters, userType }: DraftCharactersProps) {
+export function DraftCharacters({ className, characters }: DraftCharactersProps) {
+  const { userType } = useIdentityContext();
   return (
     <section className={cn('flex flex-col gap-5', className)}>
       <header className="flex gap-1 items-center">

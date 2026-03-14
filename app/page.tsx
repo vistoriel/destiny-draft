@@ -26,7 +26,7 @@ export default function Home() {
         <CreateDraftForm>
           {(form, fieldArray) => (
             <>
-              <DraftHeader className="px-12" register={form.register} fieldPrefix="draft" />
+              <DraftHeader className="px-12" register={form.register} fieldPrefix="draft" isMaster/>
               <DraftPlayers className="px-12 pt-6" register={form.register} fieldArray={fieldArray} />
               <footer className="flex justify-center items-center gap-1 px-12 pt-8">
                 <div className="flex items-center">

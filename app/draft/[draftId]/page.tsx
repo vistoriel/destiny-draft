@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { getDraftToken } from '@/lib/session';
 import { decodeUserType } from '@/lib/keys';
 import { createServerSupabase } from '@/lib/supabase/server';
-import { DraftPageClient } from '@/components/draft';
+import { DraftPageClient, IdentityProvider } from '@/components/draft';
 
 interface DraftPageProps {
   params: Promise<{ draftId: string }>;
@@ -35,11 +35,11 @@ export default async function DraftPage({ params }: DraftPageProps) {
   }
 
   return (
-    <DraftPageClient
-      initialDraft={draft}
-      userType={userType}
-      token={token ?? undefined}
-      characters={characters}
-    />
+    <IdentityProvider userType={userType} token={token ?? undefined}>
+      <DraftPageClient
+        initialDraft={draft}
+        characters={characters}
+      />
+    </IdentityProvider>
   );
 }
