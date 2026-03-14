@@ -77,7 +77,7 @@ export function DraftHeader<T extends FieldValues>({
           <div className="flex items-end gap-4">
             <LabeledInput 
               variant="title" 
-              label="game's name" 
+              label="title" 
               placeholder="The Light of Moroklyn"
               disabled={!isMaster}
               status={saveStatuses?.title || 'idle'}
@@ -87,7 +87,7 @@ export function DraftHeader<T extends FieldValues>({
             <LabeledInput 
               label="game master" 
               className="w-26" 
-              placeholder="Sviatoslav"
+              placeholder="Marie"
               disabled={!isMaster}
               status={saveStatuses?.master_name || 'idle'}
               defaultValue={initialDraft?.master_name ?? ''}
@@ -96,7 +96,7 @@ export function DraftHeader<T extends FieldValues>({
           </div>
           <LabeledTextarea
             placeholder="The game's short description..."
-            label="game's description"
+            label="description"
             disabled={!isMaster}
             status={saveStatuses?.description || 'idle'}
             defaultValue={initialDraft?.description ?? ''}

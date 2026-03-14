@@ -18,10 +18,10 @@ export function LabeledTextarea({
   ...props
 }: LabeledTextareaProps) {
   return (
-    <div className={cn('flex flex-col items-center gap-1', containerClassName)}>
+    <div className={cn('flex flex-col items-center gap-1 h-full', containerClassName)}>
       <textarea
         className={cn(
-          'block w-full h-60 leading-snug resize-none p-1.5 placeholder:text-stone-300 border-2 border-stone-900 rounded-xs cursor-text active:border-primary-900 focus:bg-primary-50 focus:outline-2 outline-primary-600 focus:z-10 outline-offset-0 disabled:cursor-text',
+          'block w-full h-full leading-snug resize-none p-1.5 placeholder:text-stone-300 border-2 border-stone-900 rounded-xs cursor-text active:border-primary-900 focus:bg-primary-50 focus:outline-2 outline-primary-600 focus:z-10 outline-offset-0 disabled:cursor-text',
           status === 'error' && 'border-red-500',
           className
         )}

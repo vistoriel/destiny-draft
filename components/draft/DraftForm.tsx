@@ -1,6 +1,5 @@
 'use client';
 
-import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { DraftHeader } from './DraftHeader';
 import { useDraftRealtime } from '@/lib/hooks';
