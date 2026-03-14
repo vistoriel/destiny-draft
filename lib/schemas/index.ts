@@ -1,2 +1,2 @@
 export * from './CreateDraft';
-export * from './UpdateDraft';
+export * from './DraftSchema';

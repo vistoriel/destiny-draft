@@ -27,7 +27,7 @@ export async function selectCharacter({ characterId }: SelectCharacterProps): Pr
   // Generate player key and hash
   const [playerKey, playerKeyHash] = generateKeyAndHash('player');
 
-  const { data: _, error: updateError } = await supabase
+  const { error: updateError } = await supabase
     .from('characters')
     .update({ is_claimed: true, player_key_hash: playerKeyHash })
     .eq('id', characterId);

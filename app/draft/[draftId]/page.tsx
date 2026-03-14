@@ -2,7 +2,8 @@ import { notFound } from 'next/navigation';
 import { getDraftToken } from '@/lib/session';
 import { decodeUserType } from '@/lib/keys';
 import { createServerSupabase } from '@/lib/supabase/server';
-import { DraftPageClient, IdentityProvider } from '@/components/draft';
+import { DraftCharacters, DraftCharacterSelector, IdentityProvider } from '@/components/draft';
+import { DraftForm } from '@/components/draft/DraftForm';
 
 interface DraftPageProps {
   params: Promise<{ draftId: string }>;
@@ -36,10 +37,13 @@ export default async function DraftPage({ params }: DraftPageProps) {
 
   return (
     <IdentityProvider userType={userType} token={token ?? undefined}>
-      <DraftPageClient
+      <DraftForm
         initialDraft={draft}
-        characters={characters}
       />
+      { userType.type === 'anon'
+        ? <DraftCharacterSelector className="px-12 pt-6" characters={characters} /> 
+        : <DraftCharacters className="px-12 pt-6" characters={characters} />
+      }
     </IdentityProvider>
   );
 }

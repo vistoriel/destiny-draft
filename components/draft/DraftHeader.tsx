@@ -3,7 +3,7 @@ import Image from "next/image";
 import { LabeledInput, LabeledTextarea } from "../ui";
 import { cn } from "@/lib/utils";
 import { UseFormRegister, FieldValues, Path } from "react-hook-form";
-import { UpdateDraftInput } from "@/lib/schemas/UpdateDraft";
+import { DraftRow } from "@/lib/supabase/rows";
 
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
@@ -14,16 +14,16 @@ interface DraftHeaderProps<T extends FieldValues> {
     [key: string]: SaveStatus;
   };
   fieldPrefix?: string;
-  defaultValue?: UpdateDraftInput;
+  initialDraft?: DraftRow;
   isMaster?: boolean;
 }
 
 export function DraftHeader<T extends FieldValues>({ 
   className, 
   register,
+  initialDraft,
   saveStatuses = {},
   fieldPrefix = '',
-  defaultValue = {},
   isMaster = false,
 }: DraftHeaderProps<T>) {
   const getFieldName = (field: string): Path<T> => 
@@ -47,7 +47,7 @@ export function DraftHeader<T extends FieldValues>({
               placeholder="The World after Lemmarch"
               disabled={!isMaster}
               status={saveStatuses?.world || 'idle'}
-              defaultValue={defaultValue.world ?? ''}
+              defaultValue={initialDraft?.world ?? ''}
               {...register(getFieldName("world"))}
             />
             <div className="flex items-end gap-4 w-54.5">
@@ -58,7 +58,7 @@ export function DraftHeader<T extends FieldValues>({
                 type="number"
                 disabled={!isMaster}
                 status={saveStatuses?.basic_cards || 'idle'}
-                defaultValue={defaultValue.basic_cards ?? 0}
+                defaultValue={initialDraft?.basic_cards ?? 0}
                 {...register(getFieldName("basic_cards"), { valueAsNumber: true })}
               />
               <LabeledInput 
@@ -67,7 +67,7 @@ export function DraftHeader<T extends FieldValues>({
                 type="number"
                 disabled={!isMaster}
                 status={saveStatuses?.basic_experience || 'idle'}
-                defaultValue={defaultValue.basic_experience ?? 0}
+                defaultValue={initialDraft?.basic_experience ?? 0}
                 {...register(getFieldName("basic_experience"), { valueAsNumber: true })}
               />
             </div>
@@ -81,7 +81,7 @@ export function DraftHeader<T extends FieldValues>({
               placeholder="The Light of Moroklyn"
               disabled={!isMaster}
               status={saveStatuses?.title || 'idle'}
-              defaultValue={defaultValue.title ?? ''}
+              defaultValue={initialDraft?.title ?? ''}
               {...register(getFieldName("title"))}
             />
             <LabeledInput 
@@ -90,7 +90,7 @@ export function DraftHeader<T extends FieldValues>({
               placeholder="Sviatoslav"
               disabled={!isMaster}
               status={saveStatuses?.master_name || 'idle'}
-              defaultValue={defaultValue.master_name ?? ''}
+              defaultValue={initialDraft?.master_name ?? ''}
               {...register(getFieldName("master_name"))}
             />
           </div>
@@ -99,7 +99,7 @@ export function DraftHeader<T extends FieldValues>({
             label="game's description"
             disabled={!isMaster}
             status={saveStatuses?.description || 'idle'}
-            defaultValue={defaultValue.description ?? ''}
+            defaultValue={initialDraft?.description ?? ''}
             {...register(getFieldName("description"))}
           />
         </div>

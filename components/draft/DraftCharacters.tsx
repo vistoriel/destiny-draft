@@ -1,8 +1,10 @@
-import { cn } from "@/lib/utils";
-import { CharacterPlaceholder } from "../character/CharacterPlaceholder";
-import { Character, CharacterItem } from "../character/Character";
-import Link from "next/link";
-import { useIdentityContext } from "./IdentityContext";
+'use client';
+
+import { cn } from '@/lib/utils';
+import { CharacterPlaceholder } from '../character/CharacterPlaceholder';
+import { Character, CharacterItem } from '../character/Character';
+import Link from 'next/link';
+import { useIdentityContext } from './IdentityContext';
 
 interface DraftCharactersProps {
   className?: string;
@@ -20,9 +22,7 @@ export function DraftCharacters({ className, characters }: DraftCharactersProps)
           </div>
           <hr className="w-full border border-dashed border-stone-900 rounded-xs" />
         </div>
-        <h2 className="uppercase mr-1 font-bold text-2xl text-stone-900 whitespace-nowrap text-nowrap">
-          Characters
-        </h2>
+        <h2 className="uppercase mr-1 font-bold text-2xl text-stone-900 whitespace-nowrap text-nowrap">Characters</h2>
         <div className="w-full flex gap-0.5 items-center">
           <hr className="w-full border border-dashed border-stone-900 rounded-xs" />
           <div className="flex items-center">
@@ -31,24 +31,26 @@ export function DraftCharacters({ className, characters }: DraftCharactersProps)
         </div>
       </header>
       <div className="grid grid-cols-4 gap-4">
-        { characters.map((character) => (
-          userType.type === 'player' && userType.character_id !== character.id
-            ? <Character key={character.id} character={character} className="opacity-50 cursor-not-allowed" />
-            : <Link
+        {characters.map(character =>
+          userType.type === 'player' && userType.character_id !== character.id ? (
+            <Character key={character.id} character={character} className="opacity-50 cursor-not-allowed" />
+          ) : (
+            <Link
               key={character.id}
               href={`/draft/${character.draft_id}/${character.id}`}
               className="rounded-xs hover:scale-105 focus:scale-105 active:scale-100 focus:outline-2 outline-primary-600 outline-offset-0 focus:z-10 cursor-pointer transition-transform"
             >
               <Character character={character} />
             </Link>
-        ))}
-        { Array.from(
-          { length: userType.type === 'master' ? 4 - characters.length % 4 : (4 - characters.length % 4) % 4 }, 
+          ),
+        )}
+        {Array.from(
+          { length: userType.type === 'master' ? 4 - (characters.length % 4) : (4 - (characters.length % 4)) % 4 },
           (_, index) => (
             <CharacterPlaceholder key={index} />
-          )
+          ),
         )}
       </div>
     </section>
-  )
+  );
 }
