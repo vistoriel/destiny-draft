@@ -1,7 +1,6 @@
 "use client";
 
-import { DraftHeader, DraftPlayers, CreateDraftForm } from "@/components/draft";
-import { RaisedButton } from "@/components/ui/RaisedButton";
+import { CreateDraftForm } from "@/components/draft";
 import { ChevronDown, Guitar, PenTool, Swords } from "lucide-react";
 
 export default function Home() {
@@ -23,27 +22,7 @@ export default function Home() {
         <ChevronDown size={32} className="text-stone-300"/> 
       </div>
       <main className="w-209 mx-auto bg-background py-12 shadow-lg border border-stone-200 flex flex-col">
-        <CreateDraftForm>
-          {(form, fieldArray) => (
-            <>
-              <DraftHeader className="px-12" register={form.register} fieldPrefix="draft" isMaster/>
-              <DraftPlayers className="px-12 pt-6" register={form.register} fieldArray={fieldArray} />
-              <footer className="flex justify-center items-center gap-1 px-12 pt-8">
-                <div className="flex items-center">
-                  <hr className="h-3 border border-stone-900 rounded-xs" />
-                </div>
-                <hr className="w-full border border-dashed border-stone-900 rounded-xs" />
-                <RaisedButton className="shrink-0" type="submit">
-                  Create a Draft
-                </RaisedButton>
-                <hr className="w-full border border-dashed border-stone-900 rounded-xs" />
-                <div className="flex items-center">
-                  <hr className="h-3 border border-stone-900 rounded-xs" />
-                </div>
-              </footer>
-            </>
-          )}
-        </CreateDraftForm>
+        <CreateDraftForm />
       </main>
     </>
   );

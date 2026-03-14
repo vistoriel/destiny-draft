@@ -16,8 +16,8 @@ export const CreateDraftSchema = z.object({
     master_name: z.string().min(2).max(32),
     description: z.string().max(512).optional(),
     world: z.string().max(32).optional(),
-    basic_cards: z.number().min(0).optional().default(3),
-    basic_experience: z.number().min(0).optional().default(50),
+    basic_cards: z.number().min(0),
+    basic_experience: z.number().min(0),
   }),
   characters: z.array(CreateCharacterSchema),
 });

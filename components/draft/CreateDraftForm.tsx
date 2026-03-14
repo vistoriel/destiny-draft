@@ -1,15 +1,14 @@
-"use client";
+'use client';
 
-import { useForm, UseFormReturn, useFieldArray } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CreateDraftSchema, CreateDraftProps, CreateDraftInput } from "@/lib/schemas";
-import { createDraft } from "@/app/actions/create-draft";
+import { useForm, useFieldArray } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CreateDraftSchema, CreateDraftInput } from '@/lib/schemas';
+import { createDraft } from '@/app/actions/create-draft';
+import { DraftPlayers } from './DraftPlayers';
+import { DraftHeader } from './DraftHeader';
+import { RaisedButton } from '../ui';
 
-interface CreateDraftFormProps {
-  children: (form: UseFormReturn<CreateDraftInput>, fieldArray: ReturnType<typeof useFieldArray<CreateDraftInput, "characters">>) => React.ReactNode;
-}
-
-export function CreateDraftForm({ children }: CreateDraftFormProps) {
+export function CreateDraftForm() {
   const form = useForm<CreateDraftInput>({
     resolver: zodResolver(CreateDraftSchema),
     defaultValues: {
@@ -32,21 +31,30 @@ export function CreateDraftForm({ children }: CreateDraftFormProps) {
 
   const fieldArray = useFieldArray({
     control: form.control,
-    name: "characters",
+    name: 'characters',
   });
 
   const onSubmit = async (data: CreateDraftInput) => {
-    // Filter out empty characters
-    const filteredData = {
-      ...data,
-      characters: data.characters.filter(c => c.name || c.player_name),
-    };
-    await createDraft(filteredData as CreateDraftProps);
+    await createDraft(data);
   };
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
-      {children(form, fieldArray)}
+      <DraftHeader className="px-12" register={form.register} fieldPrefix="draft" isMaster />
+      <DraftPlayers className="px-12 pt-6" register={form.register} fieldArray={fieldArray} />
+      <footer className="flex justify-center items-center gap-1 px-12 pt-8">
+        <div className="flex items-center">
+          <hr className="h-3 border border-stone-900 rounded-xs" />
+        </div>
+        <hr className="w-full border border-dashed border-stone-900 rounded-xs" />
+        <RaisedButton className="shrink-0" type="submit">
+          Create a Draft
+        </RaisedButton>
+        <hr className="w-full border border-dashed border-stone-900 rounded-xs" />
+        <div className="flex items-center">
+          <hr className="h-3 border border-stone-900 rounded-xs" />
+        </div>
+      </footer>
     </form>
   );
 }
