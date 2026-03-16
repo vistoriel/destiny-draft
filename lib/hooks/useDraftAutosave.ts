@@ -7,7 +7,7 @@ import { debounce } from 'lodash';
 const autosaveDelayMs = parseInt(process.env.NEXT_PUBLIC_AUTOSAVE_DELAY_MS || '1000', 10);
 
 export type DraftInputField = keyof DraftInput;
-export type FieldStatus = 'idle' | 'saving' | 'saved' | 'error';
+export type FieldStatus = 'idle' | 'saving' | 'error';
 const draftFields: DraftInputField[] = [
   'title',
   'master_name',
