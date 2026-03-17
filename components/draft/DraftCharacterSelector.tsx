@@ -1,3 +1,5 @@
+'use client';
+
 import { cn } from "@/lib/utils";
 import { Character, CharacterItem } from "../character/Character";
 import { CharacterPlaceholder } from "../character/CharacterPlaceholder";
