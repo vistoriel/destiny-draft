@@ -2,12 +2,18 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import type { UseFormWatch } from 'react-hook-form';
 import { useIdentityContext } from '@/components/draft';
 import { DraftInput, DraftSchema } from '../schemas';
-import { debounce } from 'lodash';
+import { debounce, throttle } from 'lodash';
+import { RealtimeChannel } from '@supabase/supabase-js';
 
 const autosaveDelayMs = parseInt(process.env.NEXT_PUBLIC_AUTOSAVE_DELAY_MS || '1000', 10);
 
+export type TypingEventPayload = {
+  field: DraftInputField;
+  userType: 'master' | 'player' | 'anon';
+};
 export type DraftInputField = keyof DraftInput;
-export type FieldStatus = 'idle' | 'saving' | 'error';
+export type FieldStatus = 'idle' | 'typing' | 'busy' | 'error';
+
 const draftFields: DraftInputField[] = [
   'title',
   'master_name',
@@ -57,21 +63,65 @@ export function useDraftAutosave(draftId: string, watch: UseFormWatch<DraftInput
     return saves;
   }, [performSave]);
 
+  const debouncedBroadcasts = useMemo(() => {
+    const saves = {} as Record<DraftInputField, ReturnType<typeof debounce>>;
+    draftFields.forEach(field => {
+      saves[field] = throttle(
+        (channel: RealtimeChannel) => {
+          channel.send({
+            type: 'broadcast',
+            event: 'typing',
+            payload: { field, userType: userType.type } satisfies TypingEventPayload,
+          });
+        },
+        1000,
+        { leading: true, trailing: false },
+      );
+    });
+    return saves;
+  }, [userType]);
+
+  const debouncedBusy = useMemo(() => {
+    const saves = {} as Record<DraftInputField, ReturnType<typeof debounce>>;
+    draftFields.forEach(field => {
+      saves[field] = debounce(() => setFieldStatuses(prev => ({ ...prev, [field]: 'idle' })), 5000);
+    });
+    return saves;
+  }, []);
+
   useEffect(() => {
+    const channelName = `draft:${draftId}`;
+    const channel = supabase.channel(channelName, {
+      config: { broadcast: { self: false } },
+    });
+
+    channel
+      .on<TypingEventPayload>('broadcast', { event: 'typing' }, ({ payload }) => {
+        console.log('Received typing event:', payload);
+        setFieldStatuses(prev => ({ ...prev, [payload.field]: 'busy' }));
+        debouncedBusy[payload.field]();
+      })
+      .subscribe();
+
     // register watch subscription
     const subscription = watch((value, { name, type }) => {
       // check if user is master and field name is valid
       if (userType.type !== 'master') return;
       if (!name || !type) return;
+      //if (fieldStatuses[name as DraftInputField] === 'busy') return;
 
       // update status and start the debounce timer
-      setFieldStatuses(prev => ({ ...prev, [name]: 'saving' }));
+      setFieldStatuses(prev => ({ ...prev, [name]: 'typing' }));
+      debouncedBroadcasts[name](channel);
       debouncedSaves[name](value[name]);
     });
 
     // cleanup subscription on unmount
-    return () => subscription.unsubscribe();
-  }, [watch, debouncedSaves, userType]);
+    return () => {
+      subscription.unsubscribe();
+      channel.unsubscribe();
+    };
+  }, [watch, debouncedSaves, userType, debouncedBroadcasts, supabase, draftId, debouncedBusy]);
 
   return { fieldStatuses };
 }
