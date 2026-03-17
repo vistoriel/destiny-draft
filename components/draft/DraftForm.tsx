@@ -6,7 +6,7 @@ import { useIdentityContext } from './IdentityContext';
 import { DraftRow } from '@/lib/supabase';
 import { DraftSchema } from '@/lib/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useDraftAutosave, useDraftRealtime } from '@/hooks';
+import { useDraftAutosave, useDraftPresence, useDraftRealtime } from '@/hooks';
 
 type DraftFormProps = {
   initialDraft: DraftRow;
@@ -21,10 +21,8 @@ export function DraftForm({ initialDraft }: DraftFormProps) {
     defaultValues: DraftSchema.parse(initialDraft),
   });
 
-  // Set up autosave for masters
-  const { fieldStatuses } = useDraftAutosave(initialDraft.id, form.watch);
-
-  // Subscribe to realtime updates
+  const { fieldStatuses, callbacks } = useDraftPresence(initialDraft.id);
+  useDraftAutosave(initialDraft.id, form.watch, callbacks);
   useDraftRealtime(initialDraft.id, form.reset);
 
   return (
