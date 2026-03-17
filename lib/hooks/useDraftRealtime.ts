@@ -1,44 +1,41 @@
-import { useCallback, useEffect, useRef } from 'react';
-import type { RealtimeChannel } from '@supabase/supabase-js';
+import { useCallback, useEffect } from 'react';
+import type { RealtimePostgresUpdatePayload } from '@supabase/supabase-js';
 import { DraftRow } from '../supabase';
 import { useIdentityContext } from '@/components/draft/IdentityContext';
 import { DraftInput, DraftSchema } from '../schemas';
 import { UseFormReset } from 'react-hook-form';
+import { getChangedFields } from '../utils';
 
 export function useDraftRealtime(draftId: string, reset: UseFormReset<DraftInput>): void {
   const { supabase } = useIdentityContext();
-  const channelRef = useRef<RealtimeChannel | null>(null);
 
+  // Handle incoming realtime updates
   const handleRealtimeUpdate = useCallback(
-    (draft: DraftRow) => {
-      console.log('Received realtime update:', draft);
-      reset(DraftSchema.parse(draft), { keepDirty: true, keepTouched: true });
+    (newRow: DraftRow, oldRow: Partial<DraftRow>) => {
+      const changedFields = getChangedFields(newRow, oldRow);
+      const strippedDraft = DraftSchema.partial().parse(changedFields);
+      console.log('Received realtime update:', strippedDraft);
+      reset(strippedDraft, { keepDirty: true, keepTouched: true });
     },
     [reset],
   );
 
   useEffect(() => {
     console.log(`Subscribing to realtime channel.`);
+
     // Set up the subscription
     const channel = supabase
       .channel('schema-db-changes')
       .on(
         'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'drafts',
-          filter: `id=eq.${draftId}`,
-        },
-        payload => handleRealtimeUpdate(payload.new as DraftRow),
+        { event: 'UPDATE', schema: 'public', table: 'drafts', filter: `id=eq.${draftId}` },
+        (payload: RealtimePostgresUpdatePayload<DraftRow>) => handleRealtimeUpdate(payload.new, payload.old),
       )
       .subscribe();
 
-    channelRef.current = channel;
-
     // Cleanup on unmount
     return () => {
-      if (channelRef.current) supabase.removeChannel(channelRef.current);
+      supabase.removeChannel(channel);
     };
   }, [supabase, draftId, handleRealtimeUpdate]);
 }

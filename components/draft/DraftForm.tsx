@@ -32,7 +32,7 @@ export function DraftForm({ initialDraft }: DraftFormProps) {
     <DraftHeader
       className="px-12 pb-6 border-b border-stone-200"
       register={form.register}
-      saveStatuses={fieldStatuses}
+      fieldStatuses={fieldStatuses}
       initialDraft={initialDraft}
       isMaster={userType.type === 'master'}
     />
