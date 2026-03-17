@@ -4,7 +4,7 @@ import { LabeledInput, LabeledTextarea } from "../ui";
 import { cn } from "@/lib/utils";
 import { UseFormRegister, FieldValues, Path } from "react-hook-form";
 import { DraftRow } from "@/lib/supabase/rows";
-import { FieldStatus } from "@/lib/hooks/useDraftAutosave";
+import { FieldStatus } from "@/hooks";
 
 interface DraftHeaderProps<T extends FieldValues> {
   className?: string;

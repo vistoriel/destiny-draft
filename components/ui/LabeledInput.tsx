@@ -2,7 +2,7 @@
 
 import { InputHTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
-import { FieldStatus } from '@/lib/hooks/useDraftAutosave';
+import { FieldStatus } from '@/hooks';
 
 interface LabeledInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;

@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import type { UseFormWatch } from 'react-hook-form';
 import { useIdentityContext } from '@/components/draft';
-import { DraftInput, DraftSchema } from '../schemas';
+import { DraftInput, DraftSchema } from '@/lib/schemas';
 import { debounce, throttle } from 'lodash';
 import { RealtimeChannel } from '@supabase/supabase-js';
 

@@ -1,10 +1,10 @@
 import { useCallback, useEffect } from 'react';
 import type { RealtimePostgresUpdatePayload } from '@supabase/supabase-js';
-import { DraftRow } from '../supabase';
+import { DraftRow } from '@/lib/supabase';
 import { useIdentityContext } from '@/components/draft/IdentityContext';
-import { DraftInput, DraftSchema } from '../schemas';
+import { DraftInput, DraftSchema } from '@/lib/schemas';
 import { UseFormReset } from 'react-hook-form';
-import { getChangedFields } from '../utils';
+import { getChangedFields } from '@/lib/utils';
 
 export function useDraftRealtime(draftId: string, reset: UseFormReset<DraftInput>): void {
   const { supabase } = useIdentityContext();

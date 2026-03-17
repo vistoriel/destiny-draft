@@ -2,7 +2,7 @@
 
 import { TextareaHTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
-import { FieldStatus } from '@/lib/hooks/useDraftAutosave';
+import { FieldStatus } from '@/hooks';
 
 interface LabeledTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;

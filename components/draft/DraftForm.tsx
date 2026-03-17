@@ -2,12 +2,11 @@
 
 import { useForm } from 'react-hook-form';
 import { DraftHeader } from './DraftHeader';
-import { useDraftRealtime } from '@/lib/hooks';
 import { useIdentityContext } from './IdentityContext';
 import { DraftRow } from '@/lib/supabase';
 import { DraftSchema } from '@/lib/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useDraftAutosave } from '@/lib/hooks/useDraftAutosave';
+import { useDraftAutosave, useDraftRealtime } from '@/hooks';
 
 type DraftFormProps = {
   initialDraft: DraftRow;
