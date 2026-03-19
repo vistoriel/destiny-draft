@@ -3,16 +3,19 @@
 import { useForm } from 'react-hook-form';
 import { DraftHeader } from './DraftHeader';
 import { useIdentityContext } from './IdentityContext';
-import { DraftRow } from '@/lib/supabase';
+import { CharacterRow, DraftRow } from '@/lib/supabase';
 import { DraftSchema } from '@/lib/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDraftAutosave, useDraftPresence, useDraftRealtime } from '@/hooks';
+import { DraftCharacters } from './DraftCharacters';
+import { DraftCharacterSelector } from './DraftCharacterSelector';
 
 type DraftFormProps = {
   initialDraft: DraftRow;
+  initialCharacters: CharacterRow[];
 };
 
-export function DraftForm({ initialDraft }: DraftFormProps) {
+export function DraftForm({ initialDraft, initialCharacters }: DraftFormProps) {
   const { userType } = useIdentityContext();
 
   // Initialize form with initial draft values
@@ -26,12 +29,18 @@ export function DraftForm({ initialDraft }: DraftFormProps) {
   useDraftRealtime(initialDraft.id, form.reset);
 
   return (
-    <DraftHeader
-      className="px-12 pb-6 border-b border-stone-200"
-      register={form.register}
-      fieldStatuses={fieldStatuses}
-      initialDraft={initialDraft}
-      isMaster={userType.type === 'master'}
-    />
+    <>
+      <DraftHeader
+        className="px-12 pb-6 border-b border-stone-200"
+        register={form.register}
+        fieldStatuses={fieldStatuses}
+        initialDraft={initialDraft}
+        isMaster={userType.type === 'master'}
+      />
+      { userType.type === 'anon'
+        ? <DraftCharacterSelector className="px-12 pt-6" characters={initialCharacters} /> 
+        : <DraftCharacters className="px-12 pt-6" characters={initialCharacters} />
+      }
+    </>
   );
 }

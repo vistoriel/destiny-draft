@@ -1,13 +1,14 @@
 'use client';
 
 import { cn } from "@/lib/utils";
-import { Character, CharacterItem } from "../character/Character";
+import { Character } from "../character/Character";
 import { CharacterPlaceholder } from "../character/CharacterPlaceholder";
 import { selectCharacter } from "@/app/actions/select-character";
+import { CharacterRow } from "@/lib/supabase";
 
 interface DraftCharacterSelectorProps {
   className?: string;
-  characters: CharacterItem[];
+  characters: CharacterRow[];
 }
 
 export function DraftCharacterSelector({ className, characters }: DraftCharacterSelectorProps) {

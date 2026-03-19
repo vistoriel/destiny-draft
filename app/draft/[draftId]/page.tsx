@@ -1,8 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getDraftToken } from '@/lib/session';
-import { decodeUserType } from '@/lib/keys';
 import { createServerSupabase } from '@/lib/supabase/server';
-import { DraftCharacters, DraftCharacterSelector, IdentityProvider } from '@/components/draft';
 import { DraftForm } from '@/components/draft/DraftForm';
 
 interface DraftPageProps {
@@ -12,17 +9,9 @@ interface DraftPageProps {
 export default async function DraftPage({ params }: DraftPageProps) {
   const { draftId } = await params;
 
-  // Get user's token and determine if they're a master
-  const token = await getDraftToken(draftId);
-  const userType = decodeUserType(token);
-
   // Create server Supabase client and fetch draft
   const supabase = await createServerSupabase(draftId);
-  const { data: draft, error: draftError } = await supabase
-    .from('drafts')
-    .select('*')
-    .eq('id', draftId)
-    .single();
+  const { data: draft, error: draftError } = await supabase.from('drafts').select('*').eq('id', draftId).single();
 
   const { data: characters, error: charactersError } = await supabase
     .from('characters')
@@ -36,14 +25,8 @@ export default async function DraftPage({ params }: DraftPageProps) {
   }
 
   return (
-    <IdentityProvider userType={userType} token={token ?? undefined}>
-      <DraftForm
-        initialDraft={draft}
-      />
-      { userType.type === 'anon'
-        ? <DraftCharacterSelector className="px-12 pt-6" characters={characters} /> 
-        : <DraftCharacters className="px-12 pt-6" characters={characters} />
-      }
-    </IdentityProvider>
+    <>
+      <DraftForm initialDraft={draft} initialCharacters={characters} />
+    </>
   );
 }

@@ -2,13 +2,14 @@
 
 import { cn } from '@/lib/utils';
 import { CharacterPlaceholder } from '../character/CharacterPlaceholder';
-import { Character, CharacterItem } from '../character/Character';
+import { Character } from '../character/Character';
 import Link from 'next/link';
 import { useIdentityContext } from './IdentityContext';
+import { CharacterRow } from '@/lib/supabase';
 
 interface DraftCharactersProps {
   className?: string;
-  characters: CharacterItem[];
+  characters: CharacterRow[];
 }
 
 export function DraftCharacters({ className, characters }: DraftCharactersProps) {
