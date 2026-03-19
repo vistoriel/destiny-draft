@@ -26,8 +26,7 @@ export function DraftForm({ initialDraft, initialCharacters }: DraftFormProps) {
 
   const { fieldStatuses, callbacks } = useDraftPresence(initialDraft.id);
   useDraftAutosave(initialDraft.id, form.watch, callbacks);
-  //useDraftRealtime(initialDraft.id, form.reset);
-  useRealtime(initialDraft.id, form.reset, DraftSchema);
+  useRealtime(initialDraft.id, form.reset, DraftSchema, 'drafts');
 
   return (
     <>

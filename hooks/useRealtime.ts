@@ -9,6 +9,7 @@ export function useRealtime<TRow extends FieldValues, TInput extends FieldValues
   rowId: string,
   reset: UseFormReset<TInput>,
   zodSchema: ZodObject<Record<string, ZodTypeAny>>,
+  table: string,
 ): void {
   const { supabase } = useIdentityContext();
 
@@ -31,7 +32,7 @@ export function useRealtime<TRow extends FieldValues, TInput extends FieldValues
       .channel('schema-db-changes')
       .on(
         'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'drafts', filter: `id=eq.${rowId}` },
+        { event: 'UPDATE', schema: 'public', table, filter: `id=eq.${rowId}` },
         (payload: RealtimePostgresUpdatePayload<TRow>) => handleRealtimeUpdate(payload.new, payload.old),
       )
       .subscribe();
@@ -40,5 +41,5 @@ export function useRealtime<TRow extends FieldValues, TInput extends FieldValues
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase, rowId, handleRealtimeUpdate]);
+  }, [supabase, rowId, handleRealtimeUpdate, table]);
 }
