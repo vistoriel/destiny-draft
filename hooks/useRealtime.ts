@@ -1,23 +1,26 @@
 import { useCallback, useEffect } from 'react';
 import type { RealtimePostgresUpdatePayload } from '@supabase/supabase-js';
-import { DraftRow } from '@/lib/supabase';
 import { useIdentityContext } from '@/components/draft/IdentityContext';
-import { DraftInput, DraftSchema } from '@/lib/schemas';
-import { UseFormReset } from 'react-hook-form';
+import { FieldValues, UseFormReset } from 'react-hook-form';
 import { getChangedFields } from '@/lib/utils';
+import { ZodObject, ZodTypeAny } from 'zod';
 
-export function useDraftRealtime(draftId: string, reset: UseFormReset<DraftInput>): void {
+export function useRealtime<TRow extends FieldValues, TInput extends FieldValues>(
+  rowId: string,
+  reset: UseFormReset<TInput>,
+  zodSchema: ZodObject<Record<string, ZodTypeAny>>,
+): void {
   const { supabase } = useIdentityContext();
 
   // Handle incoming realtime updates
   const handleRealtimeUpdate = useCallback(
-    (newRow: DraftRow, oldRow: Partial<DraftRow>) => {
+    (newRow: TRow, oldRow: Partial<TRow>) => {
       const changedFields = getChangedFields(newRow, oldRow);
-      const strippedDraft = DraftSchema.partial().parse(changedFields);
+      const strippedDraft = zodSchema.partial().parse(changedFields);
       console.log('Received realtime update:', strippedDraft);
-      reset(strippedDraft, { keepDirty: true, keepTouched: true });
+      reset(strippedDraft as TInput, { keepDirty: true, keepTouched: true });
     },
-    [reset],
+    [reset, zodSchema],
   );
 
   useEffect(() => {
@@ -28,8 +31,8 @@ export function useDraftRealtime(draftId: string, reset: UseFormReset<DraftInput
       .channel('schema-db-changes')
       .on(
         'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'drafts', filter: `id=eq.${draftId}` },
-        (payload: RealtimePostgresUpdatePayload<DraftRow>) => handleRealtimeUpdate(payload.new, payload.old),
+        { event: 'UPDATE', schema: 'public', table: 'drafts', filter: `id=eq.${rowId}` },
+        (payload: RealtimePostgresUpdatePayload<TRow>) => handleRealtimeUpdate(payload.new, payload.old),
       )
       .subscribe();
 
@@ -37,5 +40,5 @@ export function useDraftRealtime(draftId: string, reset: UseFormReset<DraftInput
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase, draftId, handleRealtimeUpdate]);
+  }, [supabase, rowId, handleRealtimeUpdate]);
 }

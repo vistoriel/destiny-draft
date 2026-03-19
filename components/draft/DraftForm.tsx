@@ -6,9 +6,9 @@ import { useIdentityContext } from './IdentityContext';
 import { CharacterRow, DraftRow } from '@/lib/supabase';
 import { DraftSchema } from '@/lib/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useDraftAutosave, useDraftPresence, useDraftRealtime } from '@/hooks';
 import { DraftCharacters } from './DraftCharacters';
 import { DraftCharacterSelector } from './DraftCharacterSelector';
+import { useDraftAutosave, useDraftPresence, useRealtime } from '@/hooks';
 
 type DraftFormProps = {
   initialDraft: DraftRow;
@@ -26,7 +26,8 @@ export function DraftForm({ initialDraft, initialCharacters }: DraftFormProps) {
 
   const { fieldStatuses, callbacks } = useDraftPresence(initialDraft.id);
   useDraftAutosave(initialDraft.id, form.watch, callbacks);
-  useDraftRealtime(initialDraft.id, form.reset);
+  //useDraftRealtime(initialDraft.id, form.reset);
+  useRealtime(initialDraft.id, form.reset, DraftSchema);
 
   return (
     <>
